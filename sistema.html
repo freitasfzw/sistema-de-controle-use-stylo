@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Vendas Local</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    nav button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    section {
+      display: none;
+      background: white;
+      padding: 20px;
+      margin-top: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    section.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    input, select {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      nav button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+    <h1>Sistema de Controle de Estoque e Vendas</h1>
+    <nav>
+      <button onclick="mostrarAba('estoque')">Estoque</button>
+      <button onclick="mostrarAba('vendas')">Registrar Venda</button>
+      <button onclick="mostrarAba('historico')">Histórico de Vendas</button>
+    </nav>
+  
+
+  <section id="estoque">
+    <h2>Cadastro de Produto</h2>
+    <input type="text" id="nomeProduto" placeholder="Nome do Produto">
+    <input type="number" id="quantidadeProduto" placeholder="Quantidade">
+    <input type="number" id="precoProduto" placeholder="Preço (R$)">
+    <button onclick="adicionarProduto()">Adicionar ao Estoque</button>
+    <h3>Estoque Atual</h3>
+    <table id="tabelaEstoque"></table>
+  </section>
+
+  <section id="vendas">
+    <h2>Registrar Venda</h2>
+    <select id="produtoVenda"></select>
+    <input type="number" id="quantidadeVenda" placeholder="Quantidade Vendida">
+    <button onclick="registrarVenda()">Registrar</button>
+  </section>
+
+  <section id="historico">
+    <h2>Histórico de Vendas</h2>
+    <label>Filtrar por data:</label>
+    <input type="date" id="filtroData">
+    <button onclick="filtrarVendas()">Filtrar</button>
+    <button onclick="gerarRelatorioMensal()">Relatório Mensal</button>
+    <button onclick="exportarBackup()">Exportar Backup</button>
+    <button onclick="importarBackup()">Importar Backup</button>
+    <input type="file" id="arquivoBackup" style="display:none" onchange="carregarBackup(event)">
+    <h3>Vendas Registradas</h3>
+    <table id="tabelaVendas"></table>
+    <h3>Total Vendido: R$ <span id="totalVendido">0,00</span></h3>
+  </section>
+
+  <script>
+    let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
+    let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+
+    function salvarDados() {
+      localStorage.setItem('estoque', JSON.stringify(estoque));
+      localStorage.setItem('vendas', JSON.stringify(vendas));
+    }
+
+    function mostrarAba(abaId) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(abaId).classList.add('active');
+      if (abaId === 'estoque') atualizarTabelaEstoque();
+      if (abaId === 'vendas') atualizarSelectProdutos();
+      if (abaId === 'historico') atualizarHistorico();
+    }
+
+    function adicionarProduto() {
+      const nome = document.getElementById('nomeProduto').value;
+      const quantidade = parseInt(document.getElementById('quantidadeProduto').value);
+      const preco = parseFloat(document.getElementById('precoProduto').value);
+      if (!nome || isNaN(quantidade) || isNaN(preco)) return alert('Preencha todos os campos corretamente.');
+      const existente = estoque.find(p => p.nome === nome);
+      if (existente) {
+        existente.quantidade += quantidade;
+        existente.preco = preco;
+      } else {
+        estoque.push({ nome, quantidade, preco });
+      }
+      salvarDados();
+      atualizarTabelaEstoque();
+    }
+
+    function editarProduto(index) {
+      const novoNome = prompt('Novo nome:', estoque[index].nome);
+      const novaQuantidade = parseInt(prompt('Nova quantidade:', estoque[index].quantidade));
+      const novoPreco = parseFloat(prompt('Novo preço:', estoque[index].preco));
+      if (!novoNome || isNaN(novaQuantidade) || isNaN(novoPreco)) return;
+      estoque[index] = { nome: novoNome, quantidade: novaQuantidade, preco: novoPreco };
+      salvarDados();
+      atualizarTabelaEstoque();
+    }
+
+    function excluirProduto(index) {
+      if (confirm('Tem certeza que deseja excluir este produto?')) {
+        estoque.splice(index, 1);
+        salvarDados();
+        atualizarTabelaEstoque();
+      }
+    }
+
+    function atualizarTabelaEstoque() {
+      const tabela = document.getElementById('tabelaEstoque');
+      tabela.innerHTML = '<tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>';
+      estoque.forEach((p, i) => {
+        tabela.innerHTML += `<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>${p.preco.toFixed(2)}</td><td><button onclick="editarProduto(${i})">Editar</button> <button onclick="excluirProduto(${i})">Excluir</button></td></tr>`;
+      });
+    }
+
+    function atualizarSelectProdutos() {
+      const select = document.getElementById('produtoVenda');
+      select.innerHTML = '';
+      estoque.forEach((p, i) => {
+        if (p.quantidade > 0)
+          select.innerHTML += `<option value="${i}">${p.nome} - R$${p.preco.toFixed(2)}</option>`;
+      });
+    }
+
+    function registrarVenda() {
+      const index = document.getElementById('produtoVenda').value;
+      const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+      if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
+      const produto = estoque[index];
+      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+      produto.quantidade -= quantidade;
+      const data = new Date().toISOString().split('T')[0];
+      vendas.push({ nome: produto.nome, quantidade, preco: produto.preco, data });
+      salvarDados();
+      alert('Venda registrada com sucesso!');
+      atualizarSelectProdutos();
+    }
+
+    function atualizarHistorico() {
+      const tabela = document.getElementById('tabelaVendas');
+      const totalSpan = document.getElementById('totalVendido');
+      tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
+      let total = 0;
+      vendas.forEach(v => {
+        const subtotal = v.quantidade * v.preco;
+        total += subtotal;
+        tabela.innerHTML += `<tr><td>${v.data}</td><td>${v.nome}</td><td>${v.quantidade}</td><td>${v.preco.toFixed(2)}</td><td>${subtotal.toFixed(2)}</td></tr>`;
+      });
+      totalSpan.textContent = total.toFixed(2);
+    }
+
+    function filtrarVendas() {
+      const dataFiltro = document.getElementById('filtroData').value;
+      const tabela = document.getElementById('tabelaVendas');
+      const totalSpan = document.getElementById('totalVendido');
+      tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
+      let total = 0;
+      vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach(v => {
+        const subtotal = v.quantidade * v.preco;
+        total += subtotal;
+        tabela.innerHTML += `<tr><td>${v.data}</td><td>${v.nome}</td><td>${v.quantidade}</td><td>${v.preco.toFixed(2)}</td><td>${subtotal.toFixed(2)}</td></tr>`;
+      });
+      totalSpan.textContent = total.toFixed(2);
+    }
+
+    function gerarRelatorioMensal() {
+      const mesAtual = new Date().toISOString().slice(0,7);
+      document.getElementById('filtroData').value = '';
+      const tabela = document.getElementById('tabelaVendas');
+      tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
+      let total = 0;
+      vendas.filter(v => v.data.startsWith(mesAtual)).forEach(v => {
+        const subtotal = v.quantidade * v.preco;
+        total += subtotal;
+        tabela.innerHTML += `<tr><td>${v.data}</td><td>${v.nome}</td><td>${v.quantidade}</td><td>${v.preco.toFixed(2)}</td><td>${subtotal.toFixed(2)}</td></tr>`;
+      });
+      document.getElementById('totalVendido').textContent = total.toFixed(2);
+    }
+
+    function exportarBackup() {
+      const dados = JSON.stringify({ estoque, vendas });
+      const blob = new Blob([dados], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'backup_vendas.json';
+      a.click();
+    }
+
+    function importarBackup() {
+      document.getElementById('arquivoBackup').click();
+    }
+
+    function carregarBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const conteudo = JSON.parse(e.target.result);
+        estoque = conteudo.estoque || [];
+        vendas = conteudo.vendas || [];
+        salvarDados();
+        alert('Backup importado com sucesso!');
+        mostrarAba('estoque');
+      };
+      reader.readAsText(file);
+    }
+
+    mostrarAba('estoque');
+  </script>
+</body>
+</html>
