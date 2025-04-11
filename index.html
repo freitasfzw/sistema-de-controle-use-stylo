@@ -137,19 +137,86 @@
 
   </style>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--P SCRIPT FIREBASE -->
+  <!--? PARTE 1-->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
 
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js">
+
+</script>
+
+  <!--? PARTE 2 -->
+<script type="module">
+  // Importando do Firebase (MODO MÓDULO)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+  // Configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCprBTe8SI2yzWrCbiDqPo_quY6gtepSZ0",
+    authDomain: "vendas-loja-use-stylo.firebaseapp.com",
+    databaseURL: "https://vendas-loja-use-stylo-default-rtdb.firebaseio.com",
+    projectId: "vendas-loja-use-stylo",
+    storageBucket: "vendas-loja-use-stylo.appspot.com",
+    messagingSenderId: "752808111854",
+    appId: "1:752808111854:web:319ce58624153fb5818dff",
+    measurementId: "G-SD289DZZVK"
+  };
+
+  // Inicializando Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getDatabase(app);
+
+  // Expondo funções no escopo global
+  window.exportarParaFirebase = () => {
+    const dados = { estoque, vendas };
+    set(ref(db, 'backup'), dados)
+      .then(() => alert("Backup salvo na nuvem com sucesso!"))
+      .catch((erro) => console.error("Erro ao salvar no Firebase:", erro));
+  };
+
+  window.importarDoFirebase = () => {
+    get(child(ref(db), 'backup'))
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          const dados = snapshot.val();
+          estoque = dados.estoque || [];
+          vendas = dados.vendas || [];
+          salvarDados?.(); // usando ?. para evitar erro se não existir
+          atualizarSelectProdutos?.();
+          atualizarHistorico?.();
+          alert("Backup importado da nuvem com sucesso!");
+        } else {
+          alert("Nenhum backup encontrado na nuvem.");
+        }
+      })
+      .catch((erro) => console.error("Erro ao importar do Firebase:", erro));
+  };
+</script>
+<!--P FIM SCRIPT FIREBASE -->
+
+<!--P SCRIPT GRAFICOS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--P FIM SCRIPT GRAFICOS -->
 </head>
 <body>
-    <h1>Sistema de Controle Use Stylo</h1>
 
+<!--! TITULO PRINCIPAL -->
+    <h1>Sistema de Controle Use Stylo</h1>
+<!--! FIM TITULO PRINCIPAL -->
+
+<!--! MENU -->
     <nav>
       <button onclick="mostrarAba('estoque')">Estoque</button>
       <button onclick="mostrarAba('vendas')">Registrar Venda</button>
       <button onclick="mostrarAba('historico')">Histórico de Vendas</button>
     </nav>
-  
+<!--! FIM MENU -->
 
+<!--! MENU ESTOQUE -->
   <section id="estoque">
     <h2>Cadastro de Produto</h2>
     <input type="text" id="nomeProduto" placeholder="Nome do Produto">
@@ -159,21 +226,29 @@
     <h3>Estoque Atual</h3>
     <table id="tabelaEstoque"></table>
   </section>
+<!--! FIM MENU ESTOQUE -->
 
+<!--! MENU VENDAS -->
   <section id="vendas">
     <h2>Registrar Venda</h2>
     <select id="produtoVenda"></select>
     <input type="number" id="quantidadeVenda" placeholder="Quantidade Vendida">
+    <label for="descontoVenda">Desconto (%):</label>
+<input type="number" id="descontoVenda" min="0" max="100" placeholder="0">
+
     <button onclick="registrarVenda()">Registrar</button>
   </section>
+<!--! FIM MENU VENDAS -->
 
+<!--! MENU HISTORICO -->
   <section id="historico">
     <h2>Histórico de Vendas</h2>
-    <label>Filtrar por data:</label>
+    <label>Filtrar por data:</label>  
     <input type="date" id="filtroData">
     <button onclick="filtrarVendas()">Filtrar</button>
-    <button onclick="exportarBackup()">Exportar Backup</button>
-    <button onclick="importarBackup()">Importar Backup</button>
+    <button onclick="exportarParaFirebase()">Exportar para a Nuvem</button>
+    <button onclick="importarDoFirebase()">Importar da Nuvem</button>
+    
 
 
     <input type="file" id="arquivoBackup" style="display:none" onchange="carregarBackup(event)">
@@ -186,23 +261,24 @@
     <button onclick="atualizarGrafico('ano')">Anual</button>
     <canvas id="graficoVendas" height="100"></canvas>
     <canvas id="graficoSemanal" height="100"></canvas>
-
   </section>
+<!--! FIM MENU HISTORICO -->
 
-
+<!--P SEPARADOR -->
   <br>
   <br>  
   <br>
   <br>
-    <br> 
-     <br>
+  <br> 
+  <br>
   <br>  
   <br>
   <br>
-    <br>
-    <br>
+  <br>
+  <br>
+<!--P FIM SEPARADOR -->
 
-  <!--! FOOTER -->
+<!--! FOOTER -->
   <div class="footer">
     <div class="footer1">
         <span>
@@ -233,20 +309,22 @@
 
 
     </div>
-</div>
+  </div>
 
 <!--! FIM FOOTER -->
 
-<div id="senhaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-  <div style="background:#fff; padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
-    <h3>Senha Necessária</h3>
-    <input type="password" id="senhaInput" placeholder="Digite a senha" style="width:80%; padding:10px; margin:10px 0;">
-    <button onclick="verificarSenha()">Entrar</button>
-    <button onclick="fecharModalSenha()" style="background-color:#aaa;">Cancelar</button>
+<!--! PAINEL DE SENHA -->
+  <div id="senhaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
+      <h3>Senha Necessária</h3>
+      <input type="password" id="senhaInput" placeholder="Digite a senha" style="width:80%; padding:10px; margin:10px 0;">
+      <button onclick="verificarSenha()">Entrar</button>
+      <button onclick="fecharModalSenha()" style="background-color:#aaa;">Cancelar</button>
+    </div>
   </div>
-</div>
+<!--! FIM PAINEL DE SENHA -->
 
-
+<!--? SCRIPT -->
   <script>
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
     let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
@@ -348,33 +426,51 @@
     function registrarVenda() {
   const index = document.getElementById('produtoVenda').value;
   const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+  const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
+
   if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
   const produto = estoque[index];
   if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+
   produto.quantidade -= quantidade;
 
   // Corrigindo a data local
   const hoje = new Date();
   const data = hoje.toLocaleDateString('pt-BR').split('/').reverse().join('-');
 
-  vendas.push({ nome: produto.nome, quantidade, preco: produto.preco, data });
+  // Cálculo com desconto
+  const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
+
+  vendas.push({
+    nome: produto.nome,
+    quantidade,
+    preco: produto.preco,
+    desconto, // salva o valor do desconto
+    precoComDesconto,
+    data
+  });
+
   salvarDados();
   alert('Venda registrada com sucesso!');
   atualizarSelectProdutos();
-}
+  atualizarHistorico();
+  }
 
 
-function atualizarHistorico() {
+
+  function atualizarHistorico() {
   const tabela = document.getElementById('tabelaVendas');
   const totalSpan = document.getElementById('totalVendido');
-  
-  // Cabeçalho da tabela com nova coluna "Ações"
+
+  // Cabeçalho da tabela com novas colunas e Ações
   tabela.innerHTML = `
     <tr>
       <th>Data</th>
       <th>Produto</th>
       <th>Qtd</th>
       <th>Preço (R$)</th>
+      <th>Desconto (%)</th>
+      <th>Com Desconto (R$)</th>
       <th>Total</th>
       <th>Ações</th>
     </tr>
@@ -383,14 +479,18 @@ function atualizarHistorico() {
   let total = 0;
 
   vendas.forEach((v, i) => {
-    const subtotal = v.quantidade * v.preco;
+    const precoComDesconto = v.precoComDesconto || v.preco;
+    const subtotal = v.quantidade * precoComDesconto;
     total += subtotal;
+
     tabela.innerHTML += `
       <tr>
         <td>${v.data}</td>
         <td>${v.nome}</td>
         <td>${v.quantidade}</td>
         <td>${v.preco.toFixed(2)}</td>
+        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+        <td>${precoComDesconto.toFixed(2)}</td>
         <td>${subtotal.toFixed(2)}</td>
         <td><button onclick="removerVenda(${i})">Remover</button></td>
       </tr>
@@ -400,15 +500,16 @@ function atualizarHistorico() {
   totalSpan.textContent = total.toFixed(2);
 
   atualizarGrafico('semana'); // ou 'mes', se preferir o mensal como padrão
-}
+  }
 
-function removerVenda(index) {
+
+  function removerVenda(index) {
   if (confirm("Tem certeza que deseja remover esta venda do histórico?")) {
     vendas.splice(index, 1);
     salvarDados();
     atualizarHistorico();
   }
-}
+  }
 
 
     function filtrarVendas() {
@@ -533,7 +634,7 @@ function removerVenda(index) {
       }
     }
   });
-}
+  }
 
 
     mostrarAba('estoque');
@@ -574,6 +675,8 @@ function removerVenda(index) {
     alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
   }
 
+
   </script>
+<!--? FIM SCRIPT -->
 </body>
 </html>
