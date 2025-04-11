@@ -136,6 +136,9 @@
 
 
   </style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <h1>Sistema de Controle Use Stylo</h1>
@@ -169,13 +172,21 @@
     <label>Filtrar por data:</label>
     <input type="date" id="filtroData">
     <button onclick="filtrarVendas()">Filtrar</button>
-    <button onclick="gerarRelatorioMensal()">Relatório Mensal</button>
     <button onclick="exportarBackup()">Exportar Backup</button>
     <button onclick="importarBackup()">Importar Backup</button>
+
+
     <input type="file" id="arquivoBackup" style="display:none" onchange="carregarBackup(event)">
     <h3>Vendas Registradas</h3>
     <table id="tabelaVendas"></table>
     <h3>Total Vendido: R$ <span id="totalVendido">0,00</span></h3>
+    <h3 style="justify-content: center; align-items: center; text-align: center;">Gráfico de Vendas</h3>
+    <button onclick="atualizarGrafico('semana')">Semanal</button>
+    <button onclick="atualizarGrafico('mes')">Mensal</button>
+    <button onclick="atualizarGrafico('ano')">Anual</button>
+    <canvas id="graficoVendas" height="100"></canvas>
+    <canvas id="graficoSemanal" height="100"></canvas>
+
   </section>
 
 
@@ -226,6 +237,15 @@
 
 <!--! FIM FOOTER -->
 
+<div id="senhaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
+    <h3>Senha Necessária</h3>
+    <input type="password" id="senhaInput" placeholder="Digite a senha" style="width:80%; padding:10px; margin:10px 0;">
+    <button onclick="verificarSenha()">Entrar</button>
+    <button onclick="fecharModalSenha()" style="background-color:#aaa;">Cancelar</button>
+  </div>
+</div>
+
 
   <script>
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
@@ -236,7 +256,37 @@
       localStorage.setItem('vendas', JSON.stringify(vendas));
     }
 
+    function verificarSenha() {
+    const senhaCorreta = '1234'; // você pode trocar essa senha aqui
+    const input = document.getElementById('senhaInput');
+    const senhaDigitada = input.value;
+    const aba = input.getAttribute('data-target');
+
+    if (senhaDigitada === senhaCorreta) {
+      fecharModalSenha();
+      abrirAba(aba);
+    } else {
+      alert('Senha incorreta!');
+      input.value = '';
+    }
+  }
+
+  function fecharModalSenha() {
+    document.getElementById('senhaModal').style.display = 'none';
+    document.getElementById('senhaInput').value = '';
+  }
+
     function mostrarAba(abaId) {
+  if (abaId === 'historico') {
+    document.getElementById('senhaModal').style.display = 'flex';
+    document.getElementById('senhaInput').setAttribute('data-target', abaId);
+    return;
+  }
+
+      abrirAba(abaId);
+    }
+
+    function abrirAba(abaId) {
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(abaId).classList.add('active');
       if (abaId === 'estoque') atualizarTabelaEstoque();
@@ -296,31 +346,70 @@
     }
 
     function registrarVenda() {
-      const index = document.getElementById('produtoVenda').value;
-      const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
-      if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
-      const produto = estoque[index];
-      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
-      produto.quantidade -= quantidade;
-      const data = new Date().toISOString().split('T')[0];
-      vendas.push({ nome: produto.nome, quantidade, preco: produto.preco, data });
-      salvarDados();
-      alert('Venda registrada com sucesso!');
-      atualizarSelectProdutos();
-    }
+  const index = document.getElementById('produtoVenda').value;
+  const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+  if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
+  const produto = estoque[index];
+  if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+  produto.quantidade -= quantidade;
 
-    function atualizarHistorico() {
-      const tabela = document.getElementById('tabelaVendas');
-      const totalSpan = document.getElementById('totalVendido');
-      tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
-      let total = 0;
-      vendas.forEach(v => {
-        const subtotal = v.quantidade * v.preco;
-        total += subtotal;
-        tabela.innerHTML += `<tr><td>${v.data}</td><td>${v.nome}</td><td>${v.quantidade}</td><td>${v.preco.toFixed(2)}</td><td>${subtotal.toFixed(2)}</td></tr>`;
-      });
-      totalSpan.textContent = total.toFixed(2);
-    }
+  // Corrigindo a data local
+  const hoje = new Date();
+  const data = hoje.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+
+  vendas.push({ nome: produto.nome, quantidade, preco: produto.preco, data });
+  salvarDados();
+  alert('Venda registrada com sucesso!');
+  atualizarSelectProdutos();
+}
+
+
+function atualizarHistorico() {
+  const tabela = document.getElementById('tabelaVendas');
+  const totalSpan = document.getElementById('totalVendido');
+  
+  // Cabeçalho da tabela com nova coluna "Ações"
+  tabela.innerHTML = `
+    <tr>
+      <th>Data</th>
+      <th>Produto</th>
+      <th>Qtd</th>
+      <th>Preço (R$)</th>
+      <th>Total</th>
+      <th>Ações</th>
+    </tr>
+  `;
+
+  let total = 0;
+
+  vendas.forEach((v, i) => {
+    const subtotal = v.quantidade * v.preco;
+    total += subtotal;
+    tabela.innerHTML += `
+      <tr>
+        <td>${v.data}</td>
+        <td>${v.nome}</td>
+        <td>${v.quantidade}</td>
+        <td>${v.preco.toFixed(2)}</td>
+        <td>${subtotal.toFixed(2)}</td>
+        <td><button onclick="removerVenda(${i})">Remover</button></td>
+      </tr>
+    `;
+  });
+
+  totalSpan.textContent = total.toFixed(2);
+
+  atualizarGrafico('semana'); // ou 'mes', se preferir o mensal como padrão
+}
+
+function removerVenda(index) {
+  if (confirm("Tem certeza que deseja remover esta venda do histórico?")) {
+    vendas.splice(index, 1);
+    salvarDados();
+    atualizarHistorico();
+  }
+}
+
 
     function filtrarVendas() {
       const dataFiltro = document.getElementById('filtroData').value;
@@ -379,7 +468,112 @@
       reader.readAsText(file);
     }
 
+    function atualizarGrafico(tipo) {
+  const ctx = document.getElementById('graficoVendas').getContext('2d');
+  let labels = [];
+  let dados = [];
+
+  // Reset dados
+  let mapa = {};
+
+  vendas.forEach(v => {
+    const data = new Date(v.data);
+    let chave;
+
+    if (tipo === 'semana') {
+      chave = data.toLocaleDateString('pt-BR', { weekday: 'short' }); // 'seg', 'ter'...
+    } else if (tipo === 'mes') {
+      chave = data.toLocaleDateString('pt-BR', { day: '2-digit' }); // '01', '02'...
+    } else if (tipo === 'ano') {
+      chave = data.toLocaleDateString('pt-BR', { month: 'short' }); // 'jan', 'fev'...
+    }
+
+    if (!mapa[chave]) mapa[chave] = 0;
+    mapa[chave] += v.quantidade * v.preco;
+  });
+
+  labels = Object.keys(mapa);
+  dados = Object.values(mapa);
+
+  // Ordena as chaves cronologicamente se for mês ou ano
+  if (tipo === 'mes') {
+    labels.sort((a, b) => parseInt(a) - parseInt(b));
+    dados = labels.map(dia => mapa[dia]);
+  } else if (tipo === 'ano') {
+    const ordemMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    labels.sort((a, b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
+    dados = labels.map(mes => mapa[mes]);
+  }
+
+  // Destroi gráfico anterior se já existir
+  if (window.graficoVendasObj) {
+    window.graficoVendasObj.destroy();
+  }
+
+  // Cria o novo gráfico
+  window.graficoVendasObj = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Total Vendido (R$)',
+        data: dados,
+        backgroundColor: 'rgba(0, 98, 255, 0.6)',
+        borderColor: 'rgba(0, 98, 255, 1)',
+        borderWidth: 1,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+
     mostrarAba('estoque');
+
+    function relatorioPorCategoria() {
+    const categorias = {};
+    vendas.forEach(v => {
+      const produto = estoque.find(p => p.nome === v.nome);
+      const cat = produto?.categoria || "Sem categoria";
+      const subtotal = v.quantidade * v.preco;
+      categorias[cat] = (categorias[cat] || 0) + subtotal;
+    });
+    let texto = "Relatório por Categoria:\n";
+    for (let cat in categorias) {
+      texto += `• ${cat}: R$ ${categorias[cat].toFixed(2)}\n`;
+    }
+    alert(texto);
+  }
+
+  function relatorioPorDiaSemana() {
+    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+    const totais = Array(7).fill(0);
+    vendas.forEach(v => {
+      const dia = new Date(v.data).getDay();
+      totais[dia] += v.quantidade * v.preco;
+    });
+    let texto = "Relatório por Dia da Semana:\n";
+    totais.forEach((total, i) => {
+      texto += `• ${dias[i]}: R$ ${total.toFixed(2)}\n`;
+    });
+    alert(texto);
+  }
+
+  function relatorioTicketMedio() {
+    if (vendas.length === 0) return alert("Nenhuma venda registrada.");
+    const totalVendido = vendas.reduce((acc, v) => acc + v.quantidade * v.preco, 0);
+    const ticketMedio = totalVendido / vendas.length;
+    alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
+  }
+
   </script>
 </body>
 </html>
