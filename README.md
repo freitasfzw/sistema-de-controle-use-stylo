@@ -9,8 +9,9 @@ Este projeto é um sistema simples de **controle de estoque e vendas** desenvolv
 - ✅ Cadastro de produtos com nome, quantidade e preço  
 - ✅ Registro de vendas com atualização automática no estoque  
 - ✅ Histórico de vendas com filtro por data  
-- ✅ Geração de relatório mensal  
+- ✅ Geração de relatório semanal, mensal e anual com gráficos  
 - ✅ Exportação e importação de backup em JSON  
+- ✅ Backup em nuvem com Firebase  
 - ✅ Interface responsiva para desktop e dispositivos móveis  
 
 ---
@@ -34,19 +35,36 @@ Este projeto é um sistema simples de **controle de estoque e vendas** desenvolv
 - Utiliza **localStorage** para salvar os dados localmente
 - Funções para:
   - Adicionar, editar e excluir produtos
-  - Registrar vendas e atualizar o estoque
-  - Filtrar vendas por data e gerar relatórios
-  - Exportar e importar backup de dados
+  - Registrar vendas com desconto percentual
+  - Atualizar o estoque automaticamente
+  - Filtrar vendas por data e gerar relatórios com gráficos
+  - Exportar e importar backup de dados localmente ou pela nuvem (Firebase)
 
 ---
 
-## 💻 Como Usar
+## ☁️ Integração com Firebase (Backup em Nuvem)
 
-1. **Clone o repositório** ou baixe o arquivo `.html`.
-2. **Abra o arquivo HTML** diretamente no navegador (não precisa de servidor).
-3. Navegue entre as abas: `Estoque`, `Registrar Venda` e `Histórico de Vendas`.
-4. Os dados são salvos automaticamente no navegador (localStorage).
-5. Para manter os dados seguros, utilize a opção de **backup**.
+Além do backup local via `localStorage`, o sistema conta com **integração ao Firebase Realtime Database** para **salvar e restaurar os dados na nuvem**, de forma prática e segura.
+
+### 🔄 Exportação e Importação em Nuvem
+
+- **Exportar para a nuvem**: salva automaticamente os dados do estoque e das vendas no banco de dados em tempo real do Firebase com um clique.
+- **Importar da nuvem**: recupera os dados salvos anteriormente na nuvem, restaurando o sistema mesmo que os dados locais tenham sido apagados.
+- Ao importar, o sistema também **exibe a data do último backup feito** na nuvem, garantindo mais controle sobre os dados.
+
+> ⚠️ É necessário conexão com a internet para usar essa funcionalidade.
+
+---
+
+## 📊 Relatórios com Gráficos Interativos
+
+O sistema conta com gráficos animados gerados com **Chart.js**, exibindo o desempenho das vendas de forma visual:
+
+- 📆 **Relatório semanal**: mostra os totais vendidos em cada dia da semana.
+- 📅 **Relatório mensal**: total de vendas por mês ao longo do ano.
+- 📈 **Relatório anual**: comparação dos totais vendidos por ano (se houver dados de anos anteriores).
+
+Esses relatórios são acessados diretamente na aba **Histórico de Vendas**, e ajudam a visualizar o desempenho do negócio ao longo do tempo.
 
 ---
 
@@ -56,6 +74,8 @@ Este projeto é um sistema simples de **controle de estoque e vendas** desenvolv
 - CSS3 (com variáveis e responsividade)  
 - JavaScript (puro)  
 - localStorage (armazenamento local no navegador)  
+- Firebase Realtime Database  
+- Chart.js (gráficos interativos)  
 
 ---
 
@@ -77,4 +97,3 @@ Este sistema foi projetado para se adaptar a diferentes tamanhos de tela, garant
 Este projeto é de uso **exclusivamente pessoal** e **não pode ser redistribuído, copiado, comercializado ou disponibilizado por terceiros**, total ou parcialmente, sem autorização expressa do autor.
 
 ---
-
