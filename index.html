@@ -98,7 +98,7 @@
       display: flex;
     }
 
-    /*! ------------------------------- */
+/*! ------------------------------- */
 /*! Informações para Footer         */
 /*! ------------------------------- */
 
@@ -133,7 +133,63 @@
         color: var(--principal);
     }
 
+/*! ------------------------------- */
+/*! Informações para Commits        */
+/*! ------------------------------- */
+    .changelog-container {
+      width: 80%;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
+    .changelog-header {
+      text-align: center;
+      color: #333;
+    }
+
+    .changelog-entry {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background-color: #fafafa;
+    }
+
+    .changelog-entry h3 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #007BFF;
+    }
+
+    .changelog-entry p {
+      margin: 10px 0 0;
+      font-size: 1em;
+      color: #555;
+    }
+
+    .changelog-entry .changelog-date {
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    .changelog-entry .changelog-header {
+      font-weight: bold;
+    }
+
+    .changelog-entry .update-list {
+      margin-top: 10px;
+      list-style: none;
+      padding-left: 20px;
+    }
+
+    .changelog-entry .update-list li {
+      margin: 5px 0;
+      font-size: 1em;
+      color: #555;
+    }
 
   </style>
 
@@ -301,6 +357,46 @@
     <canvas id="graficoSemanal" height="100"></canvas>
   </section>
 <!--! FIM MENU HISTORICO -->
+
+<div class="changelog-container">
+  <h1 class="changelog-header">Histórico de Atualizações</h1>
+
+  <!-- Commit 1 -->
+  <div class="changelog-entry">
+
+    <h3>Versão 1.0.2 - Adição de Formas de Pagamento </h3>
+    <p class="changelog-date">12 de Abril de 2025</p>
+    <p class="changelog-header">Novidades:</p>
+    <ul class="update-list">
+      <li>Adicionado opção de selecionar a Forma de Pagamento na hora de registrar a venda do produto. tendo a possibilidade de escolher entre as seguintes opções: Dinheiro, Pix, Cartão, Outro.</li>
+      <li>Adicionado ao <strong>Histórico de Vendas</strong> a opção de pagamento da venda do produto</li>
+    </ul>
+    </div>
+    <div class="changelog-entry">
+    <h3>Versão 1.0.1 - Correção de Bug</h3>
+    <p class="changelog-date">12 de Abril de 2025</p>
+    <p class="changelog-header">Correções:</p>
+    <ul class="update-list">
+      <li>Corrigido erro no gráfico de vendas, que mostrava as vendas com um dia de atraso.</li>
+      <li>Ajustado a manipulação de datas no histórico de vendas para evitar discrepâncias.</li>
+      <li>Agora os dados do gráfico de vendas, a função a onde era exibido os <strong>DIA DA SEMANA/DIA DO MÊS/MÊS DO ANO</strong>, foi alterada para o formato <strong>DIA DA VENDA/MÊS/ANO</strong></li>
+    </ul>
+  </div>
+
+  <!-- Commit 2 -->
+  <div class="changelog-entry">
+    <h3>Versão 1.0.0 - Lançamento Inicial</h3>
+    <p class="changelog-date">10 de Abril de 2025</p>
+    <p class="changelog-header">Novidades:</p>
+    <ul class="update-list">
+      <li>Implementado sistema de cadastro de produtos e controle de estoque.</li>
+      <li>Desenvolvido módulo de vendas com registro de transações e histórico de vendas.</li>
+      <li>Adicionada funcionalidade de gráficos para acompanhamento de vendas por período.</li>
+    </ul>
+  </div>
+
+</div>
+
 
 <!--P SEPARADOR -->
   <br>
