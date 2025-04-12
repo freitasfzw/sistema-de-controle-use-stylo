@@ -262,6 +262,16 @@
     <label for="descontoVenda">Desconto (%):</label>
 <input type="number" id="descontoVenda" min="0" max="100" placeholder="0">
 
+    <div class="form-group">
+      <label for="formaPagamento">Forma de Pagamento</label>
+      <select id="formaPagamento" class="form-control" required>
+        <option value="dinheiro">Dinheiro</option>
+        <option value="cartao">Cartão</option>
+        <option value="transferencia">Transferência</option>
+        <option value="pix">PIX</option>
+      </select>
+    </div>
+
     <button onclick="registrarVenda()">Registrar</button>
   </section>
 <!--! FIM MENU VENDAS -->
@@ -363,34 +373,34 @@
     }
 
     function verificarSenha() {
-    const senhaCorreta = '1234'; // você pode trocar essa senha aqui
-    const input = document.getElementById('senhaInput');
-    const senhaDigitada = input.value;
-    const aba = input.getAttribute('data-target');
+      const senhaCorreta = '1234'; // você pode trocar essa senha aqui
+      const input = document.getElementById('senhaInput');
+      const senhaDigitada = input.value;
+      const aba = input.getAttribute('data-target');
 
-    if (senhaDigitada === senhaCorreta) {
-      fecharModalSenha();
-      abrirAba(aba);
-    } else {
-      alert('Senha incorreta!');
-      input.value = '';
+      if (senhaDigitada === senhaCorreta) {
+        fecharModalSenha();
+        abrirAba(aba);
+      } else {
+        alert('Senha incorreta!');
+        input.value = '';
+      }
     }
-  }
 
-  function fecharModalSenha() {
-    document.getElementById('senhaModal').style.display = 'none';
-    document.getElementById('senhaInput').value = '';
-  }
+    function fecharModalSenha() {
+      document.getElementById('senhaModal').style.display = 'none';
+      document.getElementById('senhaInput').value = '';
+    }
 
     function mostrarAba(abaId) {
-  if (abaId === 'historico') {
-    document.getElementById('senhaModal').style.display = 'flex';
-    document.getElementById('senhaInput').setAttribute('data-target', abaId);
-    return;
-  }
+      if (abaId === 'historico') {
+        document.getElementById('senhaModal').style.display = 'flex';
+        document.getElementById('senhaInput').setAttribute('data-target', abaId);
+        return;
+      }
 
-      abrirAba(abaId);
-    }
+          abrirAba(abaId);
+        }
 
     function abrirAba(abaId) {
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
@@ -452,93 +462,94 @@
     }
 
     function registrarVenda() {
-  const index = document.getElementById('produtoVenda').value;
-  const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
-  const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
+      const index = document.getElementById('produtoVenda').value;
+      const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+      const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
+      const formaPagamento = document.getElementById('formaPagamento').value; // Captura a forma de pagamento
 
-  if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
-  const produto = estoque[index];
-  if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+      if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
+      const produto = estoque[index];
+      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
 
-  produto.quantidade -= quantidade;
+      produto.quantidade -= quantidade;
 
-  // Corrigindo a data local
-  const hoje = new Date();
-  const data = hoje.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+      // Corrigindo a data local
+      const hoje = new Date();
+      const data = hoje.toLocaleDateString('pt-BR').split('/').reverse().join('-');
 
-  // Cálculo com desconto
-  const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
+      // Cálculo com desconto
+      const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
 
-  vendas.push({
-    nome: produto.nome,
-    quantidade,
-    preco: produto.preco,
-    desconto, // salva o valor do desconto
-    precoComDesconto,
-    data
-  });
+      // Adiciona a venda ao histórico incluindo a forma de pagamento
+      vendas.push({
+        nome: produto.nome,
+        quantidade,
+        preco: produto.preco,
+        desconto, // salva o valor do desconto
+        precoComDesconto,
+        formaPagamento,  // Forma de pagamento adicionada
+        data
+      });
 
-  salvarDados();
-  alert('Venda registrada com sucesso!');
-  atualizarSelectProdutos();
-  atualizarHistorico();
-  }
+      salvarDados();
+      alert('Venda registrada com sucesso!');
+      atualizarSelectProdutos();
+      atualizarHistorico();
+    }
 
+    function atualizarHistorico() {
+      const tabela = document.getElementById('tabelaVendas');
+      const totalSpan = document.getElementById('totalVendido');
 
+      // Cabeçalho da tabela com a nova coluna para forma de pagamento
+      tabela.innerHTML = `
+        <tr>
+          <th>Data</th>
+          <th>Produto</th>
+          <th>Qtd</th>
+          <th>Preço (R$)</th>
+          <th>Desconto (%)</th>
+          <th>Com Desconto (R$)</th>
+          <th>Total</th>
+          <th>Forma de Pagamento</th>  <!-- Nova coluna -->
+          <th>Ações</th>
+        </tr>
+      `;
 
-  function atualizarHistorico() {
-  const tabela = document.getElementById('tabelaVendas');
-  const totalSpan = document.getElementById('totalVendido');
+      let total = 0;
 
-  // Cabeçalho da tabela com novas colunas e Ações
-  tabela.innerHTML = `
-    <tr>
-      <th>Data</th>
-      <th>Produto</th>
-      <th>Qtd</th>
-      <th>Preço (R$)</th>
-      <th>Desconto (%)</th>
-      <th>Com Desconto (R$)</th>
-      <th>Total</th>
-      <th>Ações</th>
-    </tr>
-  `;
+      vendas.forEach((v, i) => {
+        const precoComDesconto = v.precoComDesconto || v.preco;
+        const subtotal = v.quantidade * precoComDesconto;
+        total += subtotal;
 
-  let total = 0;
+        tabela.innerHTML += `
+          <tr>
+            <td>${v.data}</td>
+            <td>${v.nome}</td>
+            <td>${v.quantidade}</td>
+            <td>${v.preco.toFixed(2)}</td>
+            <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+            <td>${precoComDesconto.toFixed(2)}</td>
+            <td>${subtotal.toFixed(2)}</td>
+            <td>${v.formaPagamento}</td>  <!-- Exibe a forma de pagamento -->
+            <td><button onclick="removerVenda(${i})">Remover</button></td>
+          </tr>
+        `;
+      });
 
-  vendas.forEach((v, i) => {
-    const precoComDesconto = v.precoComDesconto || v.preco;
-    const subtotal = v.quantidade * precoComDesconto;
-    total += subtotal;
+      totalSpan.textContent = total.toFixed(2);
 
-    tabela.innerHTML += `
-      <tr>
-        <td>${v.data}</td>
-        <td>${v.nome}</td>
-        <td>${v.quantidade}</td>
-        <td>${v.preco.toFixed(2)}</td>
-        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
-        <td>${precoComDesconto.toFixed(2)}</td>
-        <td>${subtotal.toFixed(2)}</td>
-        <td><button onclick="removerVenda(${i})">Remover</button></td>
-      </tr>
-    `;
-  });
+      atualizarGrafico('semana'); // ou 'mes', se preferir o mensal como padrão
+    }
 
-  totalSpan.textContent = total.toFixed(2);
-
-  atualizarGrafico('semana'); // ou 'mes', se preferir o mensal como padrão
-  }
-
-
-  function removerVenda(index) {
-  if (confirm("Tem certeza que deseja remover esta venda do histórico?")) {
-    vendas.splice(index, 1);
-    salvarDados();
-    atualizarHistorico();
-  }
-  }
-
+    function removerVenda(index) {
+      if (confirm("Tem certeza que deseja remover esta venda do histórico?")) {
+        vendas.splice(index, 1);
+        salvarDados();
+        atualizarHistorico();
+      }
+      }
 
     function filtrarVendas() {
       const dataFiltro = document.getElementById('filtroData').value;
@@ -664,7 +675,6 @@
   });
   }
 
-
     mostrarAba('estoque');
 
     function relatorioPorCategoria() {
@@ -682,27 +692,26 @@
     alert(texto);
   }
 
-  function relatorioPorDiaSemana() {
-    const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-    const totais = Array(7).fill(0);
-    vendas.forEach(v => {
-      const dia = new Date(v.data).getDay();
-      totais[dia] += v.quantidade * v.preco;
-    });
-    let texto = "Relatório por Dia da Semana:\n";
-    totais.forEach((total, i) => {
-      texto += `• ${dias[i]}: R$ ${total.toFixed(2)}\n`;
-    });
-    alert(texto);
-  }
+    function relatorioPorDiaSemana() {
+      const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+      const totais = Array(7).fill(0);
+      vendas.forEach(v => {
+        const dia = new Date(v.data).getDay();
+        totais[dia] += v.quantidade * v.preco;
+      });
+      let texto = "Relatório por Dia da Semana:\n";
+      totais.forEach((total, i) => {
+        texto += `• ${dias[i]}: R$ ${total.toFixed(2)}\n`;
+      });
+      alert(texto);
+    }
 
-  function relatorioTicketMedio() {
-    if (vendas.length === 0) return alert("Nenhuma venda registrada.");
-    const totalVendido = vendas.reduce((acc, v) => acc + v.quantidade * v.preco, 0);
-    const ticketMedio = totalVendido / vendas.length;
-    alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
-  }
-
+    function relatorioTicketMedio() {
+      if (vendas.length === 0) return alert("Nenhuma venda registrada.");
+      const totalVendido = vendas.reduce((acc, v) => acc + v.quantidade * v.preco, 0);
+      const ticketMedio = totalVendido / vendas.length;
+      alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
+    }
 
   </script>
 <!--? FIM SCRIPT -->
