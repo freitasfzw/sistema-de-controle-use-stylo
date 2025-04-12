@@ -368,9 +368,9 @@
     let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
 
     function salvarDados() {
-      localStorage.setItem('estoque', JSON.stringify(estoque));
-      localStorage.setItem('vendas', JSON.stringify(vendas));
-    }
+  localStorage.setItem('estoque', JSON.stringify(estoque));
+  localStorage.setItem('vendas', JSON.stringify(vendas));
+}
 
     function verificarSenha() {
       const senhaCorreta = '1234'; // você pode trocar essa senha aqui
@@ -475,7 +475,8 @@
 
       // Corrigindo a data local
       const hoje = new Date();
-      const data = hoje.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+const data = hoje.toISOString().split('T')[0];  // Garantindo que estamos usando o formato YYYY-MM-DD
+
 
       // Cálculo com desconto
       const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
@@ -551,6 +552,7 @@
       }
       }
 
+
     function filtrarVendas() {
       const dataFiltro = document.getElementById('filtroData').value;
       const tabela = document.getElementById('tabelaVendas');
@@ -617,20 +619,21 @@
   let mapa = {};
 
   vendas.forEach(v => {
-    const data = new Date(v.data);
-    let chave;
+  const data = new Date(v.data);  // Garantimos que estamos lidando com um objeto Date corretamente
+  let chave;
 
-    if (tipo === 'semana') {
-      chave = data.toLocaleDateString('pt-BR', { weekday: 'short' }); // 'seg', 'ter'...
-    } else if (tipo === 'mes') {
-      chave = data.toLocaleDateString('pt-BR', { day: '2-digit' }); // '01', '02'...
-    } else if (tipo === 'ano') {
-      chave = data.toLocaleDateString('pt-BR', { month: 'short' }); // 'jan', 'fev'...
-    }
+  if (tipo === 'semana') {
+    chave = data.toISOString().split('T')[0]; // Garantir que usamos o formato ISO para a data
+  } else if (tipo === 'mes') {
+    chave = data.toISOString().slice(0, 7);  // Ano e mês, por exemplo: '2025-04'
+  } else if (tipo === 'ano') {
+    chave = data.getFullYear();  // Apenas o ano
+  }
 
-    if (!mapa[chave]) mapa[chave] = 0;
-    mapa[chave] += v.quantidade * v.preco;
-  });
+  if (!mapa[chave]) mapa[chave] = 0;
+  mapa[chave] += v.quantidade * v.preco;
+});
+
 
   labels = Object.keys(mapa);
   dados = Object.values(mapa);
@@ -712,6 +715,7 @@
       const ticketMedio = totalVendido / vendas.length;
       alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
     }
+
 
   </script>
 <!--? FIM SCRIPT -->
