@@ -379,6 +379,9 @@
 
 <!--! MENU ESTOQUE -->
   <section id="estoque">
+        <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
+    <button onclick="importarDoFirebase()">Carregar Dados da Nuvem</button>
+    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
     <h2 style="justify-content: center; align-items: center; text-align: center;">Cadastro de Produto</h2>
     <input type="text" id="nomeProduto" placeholder="Nome do Produto">
     <input type="number" id="quantidadeProduto" placeholder="Quantidade">
@@ -437,9 +440,7 @@
     <canvas id="graficoSemanal" height="100"></canvas>
 
     <br>
-    <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
-    <button onclick="importarDoFirebase()">Carregar Dados da Nuvem</button>
-    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
+
     </section>
 <!--! FIM MENU HISTORICO -->
 
