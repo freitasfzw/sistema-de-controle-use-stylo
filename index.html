@@ -386,6 +386,8 @@
     <button onclick="adicionarProduto()">Adicionar ao Estoque</button>
     <h3 style="justify-content: center; align-items: center; text-align: center;">Estoque Atual</h3>
     <table id="tabelaEstoque"></table>
+
+
   </section>
 <!--! FIM MENU ESTOQUE -->
 
@@ -428,6 +430,9 @@
 
     <div id="totaisPorForma"></div>
     <h3>Total Vendido: R$ <span id="totalVendido">0,00</span></h3>
+
+    <p id="valorTotalEstoque" style="margin-top: 10px; font-weight: bold; font-size: 20px;">Valor Total em Estoque: R$ 0,00</p>
+
     <h3 style="justify-content: center; align-items: center; text-align: center;">Gráfico de Vendas</h3>
     <button onclick="atualizarGrafico('semana')">Semanal</button>
     <button onclick="atualizarGrafico('mes')">Mensal</button>
@@ -462,7 +467,9 @@
 
       <li>4. Adicionado Sistema de separação do valor total exibido no Registro de Venda, agora separado por Dinheiro, Pix, Cartão-Débito, Cartão-Crédito, Crediario, Valor Total.</li>
 
-      <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de confusão ou alteração)</li>
+      <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de confusão ou alteração).</li>
+
+      <li>6. Adicionado valor total de Estoque dos Produtos.</li>
       
   </ul>
   </div>
@@ -640,12 +647,30 @@
     }
 
     function atualizarTabelaEstoque() {
-      const tabela = document.getElementById('tabelaEstoque');
-      tabela.innerHTML = '<tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>';
-      estoque.forEach((p, i) => {
-        tabela.innerHTML += `<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>${p.preco.toFixed(2)}</td><td><button onclick="editarProduto(${i})">Editar</button> <button onclick="excluirProduto(${i})">Excluir</button></td></tr>`;
-      });
-    }
+  const tabela = document.getElementById('tabelaEstoque');
+  tabela.innerHTML = '<tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>';
+  
+  let valorTotal = 0;
+
+  estoque.forEach((p, i) => {
+    const valorProduto = p.quantidade * p.preco;
+    valorTotal += valorProduto;
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${p.nome}</td>
+        <td>${p.quantidade}</td>
+        <td>${p.preco.toFixed(2)}</td>
+        <td>
+          <button onclick="editarProduto(${i})">Editar</button>
+          <button onclick="excluirProduto(${i})">Excluir</button>
+        </td>
+      </tr>`;
+  });
+
+  // Atualiza o valor total no parágrafo abaixo da tabela
+  document.getElementById('valorTotalEstoque').innerText = `Valor Total em Estoque: R$ ${valorTotal.toFixed(2)}`;
+}
 
     function atualizarSelectProdutos() {
       const select = document.getElementById('produtoVenda');
