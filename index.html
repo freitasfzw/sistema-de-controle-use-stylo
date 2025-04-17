@@ -288,6 +288,9 @@
   const analytics = getAnalytics(app);
   const db = getDatabase(app);
 
+  // Declare crediarios aqui
+  let crediarios = [];
+
   // 🟢 Expondo no window
   window.firebaseApp = app;
   window.analytics = analytics;
@@ -297,11 +300,12 @@
   window.get = get;
   window.child = child;
 
-  // Exportar para Firebase (estoque e vendas apenas)
+  // Exportar para Firebase (estoque, vendas e crediários)
   window.exportarParaFirebase = () => {
     const dados = {
       estoque,
       vendas,
+      crediarios: JSON.parse(localStorage.getItem('crediarios')) || [],  // Pega os crediários do localStorage
       ultimaAtualizacao: new Date().toLocaleString('pt-BR')
     };
 
@@ -313,28 +317,40 @@
       .catch((erro) => console.error("Erro ao salvar no Firebase:", erro));
   };
 
-  // Importar do Firebase (estoque e vendas apenas)
+  // Importar do Firebase (estoque, vendas e crediários)
   window.importarDoFirebase = () => {
     window.get(window.child(window.ref(window.db), 'backup'))
       .then(snapshot => {
         if (snapshot.exists()) {
           const dados = snapshot.val();
-          estoque = dados.estoque || [];
-          vendas = dados.vendas || [];
-          salvarDados?.();
-          atualizarSelectProdutos?.();
-          atualizarHistorico?.();
+          console.log(dados);
+          
+          if (dados) {
+            estoque = dados.estoque || [];
+            vendas = dados.vendas || [];
+            crediarios = dados.crediarios || [];
+            localStorage.setItem('crediarios', JSON.stringify(crediarios));
+            salvarDados?.();
+            atualizarSelectProdutos?.();
+            atualizarHistorico?.();
+            carregarCrediarios();
+            if (dados.ultimaAtualizacao) {
+              document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+            }
 
-          if (dados.ultimaAtualizacao) {
-            document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+            alert("Backup importado da nuvem com sucesso!");
+          } else {
+            alert("Não há dados no backup.");
           }
-
-          alert("Backup importado da nuvem com sucesso!");
         } else {
           alert("Nenhum backup encontrado na nuvem.");
         }
       })
-      .catch((erro) => console.error("Erro ao importar do Firebase:", erro));
+      .catch((erro) => {
+        console.error("Erro ao importar do Firebase:", erro);
+        alert("Houve um erro ao tentar importar os dados.");
+      });
+
   };
 
   // Mostrar data do último backup ao carregar
@@ -344,9 +360,15 @@
         if (snapshot.exists() && snapshot.val().ultimaAtualizacao) {
           document.getElementById('ultimaDataBackup').textContent = `Último backup: ${snapshot.val().ultimaAtualizacao}`;
         }
+      })
+      .catch((erro) => {
+        console.error("Erro ao carregar a data do último backup:", erro);
+        alert("Houve um erro ao tentar carregar a data do último backup.");
       });
   });
 </script>
+
+
 <!--P FIM SCRIPT FIREBASE -->
 
 <!--P SCRIPT GRAFICOS -->
@@ -355,6 +377,7 @@
 </head>
 <body>
 
+<!--! AVISOS DO SISTEMA -->
   <div id="avisoModal" class="modal-overlay">
     <div class="modal-content">
       <h2>Bem-vindo ao Sistema de Controle Use Stylo!</h2>
@@ -364,6 +387,7 @@
       <button onclick="fecharAviso()">Ok</button>
     </div>
   </div>
+<!--! FIM AVISOS DO SISTEMA-->
 
 <!--! TITULO PRINCIPAL -->
     <h1>Sistema de Controle Use Stylo</h1>
@@ -373,9 +397,10 @@
     <nav>
       <button onclick="mostrarAba('estoque')">Estoque</button>
       <button onclick="mostrarAba('vendas')">Registrar Venda</button>
+      <button onclick="mostrarAba('crediario')">Crediario</button>
       <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
       <button onclick="mostrarAba('historico')">Painel de Controle</button>
-
+      <button><a style="color: var(--branco); text-decoration: none;" href="#atualizaçoes">Atualizações</a></button>
     </nav>
 <!--! FIM MENU -->
 
@@ -413,8 +438,42 @@
     </div>
 
     <button onclick="registrarVenda()">Registrar</button>
+
+    <div class="main-container">
+      <h1>Calculadora de Troco</h1>
+    </div>
+  
+    <div id="calculadora" class="container">
+      <div class="header">
+      </div>
+      <br>
+  
+      <div class="input-group">
+        <label>Valor da compra</label>
+        <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
+      </div>
+  
+      <div class="input-group">
+        <label>Valor pago</label>
+        <input type="number" id="valorPago" placeholder="Ex: 50.00" />
+      </div>
+  
+      <button onclick="calcularTroco()">Calcular Troco</button>
+  
+      <div id="resultado" class="resultado"></div>
+    </div>
+
+
   </section>
 <!--! FIM MENU VENDAS -->
+
+<!--! MENU CREDIARIO -->
+  <section id="crediario">
+    <h2 style="justify-content: center; align-items: center; text-align: center">Crediarios</h2>
+
+
+  </section>
+<!--! FIM MENU CREDIARIO -->
 
 <!--! MENU NUVEM -->
 <section id="nuvem">
@@ -457,35 +516,59 @@
   </section>
 <!--! FIM MENU HISTORICO -->
 
-
-<div class="changelog-container">
+<!--! ATUALIZAÇÕES DO SISTEMA -->
+<div class="changelog-container" id="atualizaçoes">
   <h1 class="changelog-header">Histórico de Atualizações</h1>
-  <!-- Versão 1.1.0 -->
+
+    <!-- Versão Final 2.0.0 -->
+    <div class="changelog-entry">
+      <h3>Versão Final 2.0.0 - Correção de Bug + Novidades</h3>
+      <p class="changelog-date">17 de Abril de 2025</p>
+      <p class="changelog-header">Correções:</p>
+      <ul class="update-list">
+        <li>1. Corrigido ao filtrar por data, o sistema não carregava os botões de opção sobre as vendas.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>2. Corrigida a lógica de exibição formas de pagamento ao filtrar as vendas por data.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente com os descontos aplicados na venda.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem sobre os Dados do Crediarios.<strong style="color: var(--principal);">(Nuvem)</strong></li>
+      </ul>
+  
+      <p class="changelog-date">17 de Abril de 2025</p>
+      <p class="changelog-header">Novidades:</p>
+      <ul class="update-list">
+        <li>1. Adicionada aba Crediario.<strong style="color: var(--principal);">(Crediario)</strong></li>
+        <li>2. Adicionado sistema de registro de Dados do Crediario(és de extrema importância ressaltar que, ao realizar uma venda na aba Registrar Venda com a forma de pagamento desejeada como: Crediario, é necessario adicionar as informações extras do individuo através da aba Crediarios), a onde será possivel registrar dados pessoais do individuo e realizar o pagamento das faturas do mesmo.<strong style="color: var(--principal);">(Crediario)</strong></li>
+        <li>3. Adicionada aba Nuvem.<strong style="color: var(--principal);">(Nuvem)</strong></li>
+        <li>4. Adicionado sistema a onde os Dados do Crediario são Salvos/Carregados da nuvem em perfeito estado.<strong style="color: var(--principal);">(Nuvem)</strong></li>
+        <li>5. Adicionado sistema de CALCULADORA DE TROCO, a onde será possível agora, manualmente informar o valor da venda, o valor que foi recebido do comprador e receber o valor que deve ser devolvido ao mesmo.<strong style="color: var(--principal);">(Registrar Venda)</strong></li>
+        <li>6. Adicionado aba Atualizações.<strong style="color: var(--principal);">(Atualizaçoes)</strong></li>
+    </ul>
+    </div>
+  <!-- [BETA] Versão 1.1.0 -->
   <div class="changelog-entry">
-    <h3>Versão 1.1.0 - Correção de Bug + Adição de Útilitários</h3>
+    <h3>[BETA] Versão 1.1.0 - Correção de Bug + Adição de Útilitários</h3>
     <p class="changelog-date">14 de Abril de 2025</p>
     <p class="changelog-header">Correções:</p>
     <ul class="update-list">
-      <li>1. Corrigido o erro de informações undefined no histórico de vendas ao registrar a forma de pagamento.</li>
-      <li>2. Corrigida a lógica de exibição de produtos pagos no histórico de vendas, garantindo a precisão das informações.</li>
-      <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente.</li>
-      <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem.</li>
+      <li>1. Corrigido o erro de informações undefined no histórico de vendas ao registrar a forma de pagamento.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+      <li>2. Corrigida a lógica de exibição de produtos pagos no histórico de vendas, garantindo a precisão das informações.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+      <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+      <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem.<strong style="color: var(--principal);">(Nuvem)</strong></li>
     </ul>
 
     <p class="changelog-date">14 de Abril de 2025</p>
     <p class="changelog-header">Novidades:</p>
     <ul class="update-list">
-      <li>1. Adicionado estilização de tons mais escuros de preto com detalhes em roxo para criar um tema dark, com ajustes nas cores de fundo, texto e bordas.</li>
+      <li>1. Adicionado estilização de tons mais escuros de preto com detalhes em roxo para criar um tema dark, com ajustes nas cores de fundo, texto e bordas.<strong style="color: var(--principal);">(Sistema De Controle Use Stylo)</strong></li>
 
-      <li>2. Adicionado na estrutura do menu e das seções, com botões maiores e mais espaçados para facilitar a navegação. Ajustes nas tabelas de estoque e vendas para uma visualização mais limpa.</li>
+      <li>2. Adicionado na estrutura do menu e das seções, com botões maiores e mais espaçados para facilitar a navegação. Ajustes nas tabelas de estoque e vendas para uma visualização mais limpa.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
       
-      <li>3. Adicionado transições suaves nos botões e links, com feedback visual ao passar o mouse. Implementação de responsividade para dispositivos móveis, ajustando o layout automaticamente.</li>
+      <li>3. Adicionado transições suaves nos botões e links, com feedback visual ao passar o mouse. Implementação de responsividade para dispositivos móveis, ajustando o layout automaticamente.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
 
-      <li>4. Adicionado Sistema de separação do valor total exibido no Registro de Venda, agora separado por Dinheiro, Pix, Cartão-Débito, Cartão-Crédito, Crediario, Valor Total.</li>
+      <li>4. Adicionado Sistema de separação do valor total exibido no Registro de Venda, agora separado por Dinheiro, Pix, Cartão-Débito, Cartão-Crédito, Crediario, Valor Total.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
 
-      <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de confusão ou alteração).</li>
+      <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de confusão ou alteração).<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
 
-      <li>6. Adicionado valor total de Estoque dos Produtos.</li>
+      <li>6. Adicionado valor total de Estoque dos Produtos.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
       
   </ul>
   </div>
@@ -496,15 +579,15 @@
     <p class="changelog-date">12 de Abril de 2025</p>
     <p class="changelog-header">Correções:</p>
     <ul class="update-list">
-      <li>1. Corrigido erro no gráfico de vendas, que mostrava as vendas com um dia de atraso.</li>
-      <li>2. Ajustado a manipulação de datas no histórico de vendas para evitar discrepâncias.</li>
-      <li>3. Agora os dados do gráfico de vendas, a função a onde era exibido os <strong>DIA DA SEMANA/DIA DO MÊS/MÊS DO ANO</strong>, foi alterada para o formato <strong>DIA DA VENDA/MÊS/ANO</strong></li>
+      <li>1. Corrigido erro no gráfico de vendas, que mostrava as vendas com um dia de atraso.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+      <li>2. Ajustado a manipulação de datas no histórico de vendas para evitar discrepâncias.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+      <li>3. Agora os dados do gráfico de vendas, a função a onde era exibido os <strong>DIA DA SEMANA/DIA DO MÊS/MÊS DO ANO</strong>, foi alterada para o formato <strong>DIA DA VENDA/MÊS/ANO</strong><strong style="color: var(--principal);">(Painel de Controle)</strong></li>
     </ul>
       <p class="changelog-date">12 de Abril de 2025</p>
       <p class="changelog-header">Novidades:</p>
       <ul class="update-list">
-        <li>1. Adicionado opção de selecionar a Forma de Pagamento na hora de registrar a venda do produto. tendo a possibilidade de escolher entre as seguintes opções: Dinheiro, Pix, Cartão, Outro.</li>
-        <li>2. Adicionado ao <strong>Histórico de Vendas</strong> a opção de pagamento da venda do produto</li>
+        <li>1. Adicionado opção de selecionar a Forma de Pagamento na hora de registrar a venda do produto. tendo a possibilidade de escolher entre as seguintes opções: Dinheiro, Pix, Cartão, Outro.<strong style="color: var(--principal);">(Registrar Venda)</strong></li>
+        <li>2. Adicionado ao <strong>Painel de Controle</strong> a opção de pagamento da venda do produto<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
     </ul>
   </div>
 
@@ -514,15 +597,15 @@
     <p class="changelog-date">10 de Abril de 2025</p>
     <p class="changelog-header">Novidades:</p>
     <ul class="update-list">
-      <li>1. Implementado sistema de cadastro de produtos e controle de estoque.</li>
-      <li>2. Desenvolvido módulo de vendas com registro de transações e histórico de vendas.</li>
-      <li>3. Adicionada funcionalidade de gráficos para acompanhamento de vendas por período.</li>
-      <li>3. Adicionada funcionalidade de importar e exportar os dados do navegador(venda,estoque, historico) para um banco de dados.</li>
+      <li>1. Implementado sistema de cadastro de produtos e controle de estoque.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+      <li>2. Desenvolvido módulo de vendas com registro de transações e histórico de vendas.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+      <li>3. Adicionada funcionalidade de gráficos para acompanhamento de vendas por período.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+      <li>3. Adicionada funcionalidade de importar e exportar os dados do navegador(venda,estoque, historico) para um banco de dados.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
     </ul>
   </div>
 
 </div>
-
+<!--! FIM ATUALIZAÇÕES DO SISTEMA -->
 
 <!--! FOOTER -->
   <div class="footer">
@@ -579,8 +662,163 @@
       window.child
 
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
-    let vendas = JSON.parse(localStorage.getItem('vendas')) || []
+    let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+    let crediario = JSON.parse(localStorage.getItem('crediarios')) || [];
 
+    document.addEventListener('DOMContentLoaded', montarCrediario);
+
+    function calcularTroco() {
+      const valorCompra = parseFloat(document.getElementById("valorCompra").value);
+      const valorPago = parseFloat(document.getElementById("valorPago").value);
+      const resultadoDiv = document.getElementById("resultado");
+
+      if (isNaN(valorCompra) || isNaN(valorPago)) {
+        resultadoDiv.innerHTML = "<p>Preencha ambos os campos.</p>";
+        return;
+      }
+
+      if (valorPago < valorCompra) {
+        resultadoDiv.innerHTML = "<p>Valor pago insuficiente.</p>";
+        return;
+      }
+
+      let troco = (valorPago - valorCompra).toFixed(2);
+      let trocoRestante = troco;
+
+      const cedulas = [200, 100, 50, 20, 10, 5, 2];
+      const moedas = [1, 0.5, 0.25, 0.1, 0.05, 0.01];
+
+      let detalhes = "<h3>Troco: R$ " + troco + "</h3><ul>";
+
+      cedulas.forEach((valor) => {
+        const qtd = Math.floor(trocoRestante / valor);
+        if (qtd > 0) {
+          detalhes += `<li>${qtd} x R$ ${valor.toFixed(2)}</li>`;
+          trocoRestante -= qtd * valor;
+          trocoRestante = trocoRestante.toFixed(2);
+        }
+      });
+
+      moedas.forEach((valor) => {
+        const qtd = Math.floor(trocoRestante / valor);
+        if (qtd > 0) {
+          detalhes += `<li>${qtd} x R$ ${valor.toFixed(2)}</li>`;
+          trocoRestante -= qtd * valor;
+          trocoRestante = trocoRestante.toFixed(2);
+        }
+      });
+
+      detalhes += "</ul>";
+
+      resultadoDiv.innerHTML = detalhes;
+    }
+
+    function montarCrediario() {
+      const section = document.getElementById('crediario');
+      section.innerHTML += `
+        <div id="formCrediario" style="margin: 20px; display: flex; flex-direction: column; gap: 10px">
+          <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+          <input type="text" id="cpfCliente" placeholder="CPF">
+          <input type="text" id="produtosComprados" placeholder="Produtos Comprados">
+          <input type="text" id="valorCompra" placeholder="Valor da Compra">
+          <input type="date" id="dataCompra">
+          <input type="number" id="diaPagamento" placeholder="Dia do Mês de Pagamento" min="1" max="31">
+          <input type="number" id="parcelasTotais" placeholder="Número de Parcelas" min="1">
+          <button onclick="adicionarCrediario()">Salvar Crediário</button>
+        </div>
+
+        <div id="listaCrediarios" style="margin-top: 30px">
+          <h3 style="text-align:center">Clientes no Crediário</h3>
+        </div>
+      `;
+
+      carregarCrediarios();
+    }
+
+    function adicionarCrediario() {
+      const nome = document.getElementById('nomeCliente').value;
+      const cpf = document.getElementById('cpfCliente').value;
+      const produtos = document.getElementById('produtosComprados').value;
+      const valor = document.getElementById('valorCompra').value;
+      const dataCompra = document.getElementById('dataCompra').value;
+      const diaPagamento = document.getElementById('diaPagamento').value;
+      const parcelasTotais = parseInt(document.getElementById('parcelasTotais').value);
+
+      if (!nome || !cpf || !produtos || !valor || !dataCompra || !diaPagamento || !parcelasTotais) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+
+      crediarios.push({
+        id: Date.now(),
+        nome,
+        cpf,
+        produtos,
+        valor,
+        dataCompra,
+        diaPagamento,
+        parcelasTotais,
+        parcelasPagas: 0
+      });
+
+      localStorage.setItem('crediarios', JSON.stringify(crediarios));
+
+      carregarCrediarios();
+    }
+
+    function carregarCrediarios() {
+      const listaDiv = document.getElementById('listaCrediarios');
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+
+      listaDiv.innerHTML = '<h3 style="text-align:center">Clientes no Crediário</h3>';
+
+      crediarios.forEach(c => {
+        const valorParcela = (parseFloat(c.valor) / c.parcelasTotais).toFixed(2);
+
+        listaDiv.innerHTML += `
+          <div style="border: 1px solid #444; border-radius: 8px; padding: 10px; margin: 10px 0; background: #222">
+            <p><strong>Nome:</strong> ${c.nome}</p>
+            <p><strong>CPF:</strong> ${c.cpf}</p>
+            <p><strong>Produtos:</strong> ${c.produtos}</p>
+            <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valor).toFixed(2)}</p>
+            <p><strong>Valor Parcela:</strong> R$ ${valorParcela}</p>
+            <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
+            <p><strong>Dia Pagamento:</strong> ${c.diaPagamento}</p>
+            <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
+            <button onclick="pagarParcela(${c.id})">Pagar Parcela</button>
+            <button onclick="excluirCrediario(${c.id})">Excluir</button>
+          </div>
+        `;
+      });
+    }
+
+    function pagarParcela(id) {
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+      const index = crediarios.findIndex(c => c.id === id);
+
+      if (index !== -1) {
+        crediarios[index].parcelasPagas++;
+
+        if (crediarios[index].parcelasPagas >= crediarios[index].parcelasTotais) {
+          if (confirm('Todas as parcelas foram pagas. Remover este crediário?')) {
+            crediarios.splice(index, 1);
+          }
+        }
+
+        localStorage.setItem('crediarios', JSON.stringify(crediarios));
+        carregarCrediarios();
+      }
+    }
+
+    function excluirCrediario(id) {
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+      const novoArray = crediarios.filter(c => c.id !== id);
+
+      localStorage.setItem('crediarios', JSON.stringify(novoArray));
+      carregarCrediarios();
+    }
 
     function salvarDados() {
       localStorage.setItem('estoque', JSON.stringify(estoque));
@@ -948,7 +1186,7 @@
   reader.readAsText(file);  // Lendo o conteúdo do arquivo como texto
 }
 
-function atualizarGrafico(tipo) {
+    function atualizarGrafico(tipo) {
   // Recarrega os dados de vendas do localStorage
   const vendas = JSON.parse(localStorage.getItem('vendas')) || []; // Garantir que estamos usando os dados mais recentes
 
