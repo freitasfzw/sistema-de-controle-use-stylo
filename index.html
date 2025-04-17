@@ -373,7 +373,6 @@
     <nav>
       <button onclick="mostrarAba('estoque')">Estoque</button>
       <button onclick="mostrarAba('vendas')">Registrar Venda</button>
-      <button onclick="mostrarAba('crediario')">Crediario</button>
       <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
       <button onclick="mostrarAba('historico')">Painel de Controle</button>
 
@@ -409,42 +408,13 @@
         <option value="Cartao-Debito">Cartão - Debito</option>
         <option value="Cartao-Credito">Cartão - Crédito</option>
         <option value="Pix">PIX</option>
-        <option value="Crediario">Crediário</option>
+
       </select>
     </div>
 
     <button onclick="registrarVenda()">Registrar</button>
   </section>
 <!--! FIM MENU VENDAS -->
-
-<!--! MENU CREDIARIO -->
-
-<section id="crediario">
-  <h2 style="justify-content: center; align-items: center; text-align: center">Crediários em Aberto</h2>
-  <table id="tabelaCrediario">
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Produto</th>
-        <th>Qtd</th>
-        <th>Preço (R$)</th>
-        <th>Desconto (%)</th>
-        <th>Com Desconto (R$)</th>
-        <th>Total</th>
-        <th>Forma de Pagamento</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- As vendas com Crediário serão preenchidas aqui -->
-    </tbody>
-  </table>
-</section>
-
-</section>
-
-
-<!--! FIM MENU CREDIARIO -->
 
 <!--! MENU NUVEM -->
 <section id="nuvem">
@@ -830,42 +800,6 @@
       }
 
       totalPorFormaSpan.innerHTML = htmlTotais;
-
-
-      const tabelaCrediario = document.getElementById('tabelaCrediario').getElementsByTagName('tbody')[0];
-
-tabelaCrediario.innerHTML = '';  // Limpa as vendas anteriores na tabela
-
-let totalCrediario = 0;
-
-vendas.forEach((v, i) => {
-  if (v.formaPagamento === 'Crediario') {
-    const precoComDesconto = v.precoComDesconto || v.preco;
-    const subtotal = v.quantidade * precoComDesconto;
-    totalCrediario += subtotal;
-
-    // Preenche a tabela com as vendas feitas via Crediário
-    const row = tabelaCrediario.insertRow();
-
-    row.innerHTML = `
-      <td>${v.data}</td>
-      <td>${v.nome}</td>
-      <td>${v.quantidade}</td>
-      <td>${v.preco.toFixed(2)}</td>
-      <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
-      <td>${precoComDesconto.toFixed(2)}</td>
-      <td>${subtotal.toFixed(2)}</td>
-      <td>${v.formaPagamento}</td>
-      <td><button onclick="removerVenda(${i})">Remover</button></td>
-    `;
-  }
-});
-
-// Se você deseja exibir o total do Crediário em algum lugar específico, pode adicionar o seguinte:
-const totalCrediarioSpan = document.getElementById('totalCrediario');
-if (totalCrediarioSpan) {
-  totalCrediarioSpan.textContent = totalCrediario.toFixed(2);
-}
 
       atualizarGrafico('semana');
     }
