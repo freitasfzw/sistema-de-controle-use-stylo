@@ -373,15 +373,15 @@
     <nav>
       <button onclick="mostrarAba('estoque')">Estoque</button>
       <button onclick="mostrarAba('vendas')">Registrar Venda</button>
+      <button onclick="mostrarAba('crediario')">Crediario</button>
+      <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
       <button onclick="mostrarAba('historico')">Painel de Controle</button>
+
     </nav>
 <!--! FIM MENU -->
 
 <!--! MENU ESTOQUE -->
   <section id="estoque">
-        <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
-    <button onclick="importarDoFirebase()">Carregar Dados da Nuvem</button>
-    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
     <h2 style="justify-content: center; align-items: center; text-align: center;">Cadastro de Produto</h2>
     <input type="text" id="nomeProduto" placeholder="Nome do Produto">
     <input type="number" id="quantidadeProduto" placeholder="Quantidade">
@@ -389,6 +389,8 @@
     <button onclick="adicionarProduto()">Adicionar ao Estoque</button>
     <h3 style="justify-content: center; align-items: center; text-align: center;">Estoque Atual</h3>
     <table id="tabelaEstoque"></table>
+
+
   </section>
 <!--! FIM MENU ESTOQUE -->
 
@@ -415,12 +417,56 @@
   </section>
 <!--! FIM MENU VENDAS -->
 
+<!--! MENU CREDIARIO -->
+
+<section id="crediario">
+  <h2 style="justify-content: center; align-items: center; text-align: center">Crediários em Aberto</h2>
+  <table id="tabelaCrediario">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Produto</th>
+        <th>Qtd</th>
+        <th>Preço (R$)</th>
+        <th>Desconto (%)</th>
+        <th>Com Desconto (R$)</th>
+        <th>Total</th>
+        <th>Forma de Pagamento</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- As vendas com Crediário serão preenchidas aqui -->
+    </tbody>
+  </table>
+</section>
+
+</section>
+
+
+<!--! FIM MENU CREDIARIO -->
+
+<!--! MENU NUVEM -->
+<section id="nuvem">
+  <h2 style="justify-content: center; align-items: center; text-align: center;">Nuvem de Dados</h2>
+
+  <h3 style="color: var(--principal); font-size: 15px;">Toda ação é irreversivel pois não existe backup no banco de dados!</h3>
+  <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
+  <br><br>
+
+  <button onclick="importarDoFirebase()">Carregar Dados Salvos da Nuvem</button>
+  <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
+
+</section>
+<!--! FIM MENU NUVEM -->
+
 <!--! MENU HISTORICO -->
   <section id="historico">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Histórico de Vendas</h2>
     <label>Filtrar por data:</label>  
     <input type="date" id="filtroData">
     <button onclick="filtrarVendas()">Filtrar</button>
+    <button onclick="removerFiltro()">Remover Filtro</button>
 
 
     <input type="file" id="arquivoBackup" style="display:none" onchange="carregarBackup(event)">
@@ -438,11 +484,9 @@
     <button onclick="atualizarGrafico('ano')">Anual</button>
     <canvas id="graficoVendas" height="100"></canvas>
     <canvas id="graficoSemanal" height="100"></canvas>
-
-    <br>
-
-    </section>
+  </section>
 <!--! FIM MENU HISTORICO -->
+
 
 <div class="changelog-container">
   <h1 class="changelog-header">Histórico de Atualizações</h1>
@@ -566,6 +610,7 @@
 
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
     let vendas = JSON.parse(localStorage.getItem('vendas')) || []
+
 
     function salvarDados() {
       localStorage.setItem('estoque', JSON.stringify(estoque));
@@ -786,6 +831,42 @@
 
       totalPorFormaSpan.innerHTML = htmlTotais;
 
+
+      const tabelaCrediario = document.getElementById('tabelaCrediario').getElementsByTagName('tbody')[0];
+
+tabelaCrediario.innerHTML = '';  // Limpa as vendas anteriores na tabela
+
+let totalCrediario = 0;
+
+vendas.forEach((v, i) => {
+  if (v.formaPagamento === 'Crediario') {
+    const precoComDesconto = v.precoComDesconto || v.preco;
+    const subtotal = v.quantidade * precoComDesconto;
+    totalCrediario += subtotal;
+
+    // Preenche a tabela com as vendas feitas via Crediário
+    const row = tabelaCrediario.insertRow();
+
+    row.innerHTML = `
+      <td>${v.data}</td>
+      <td>${v.nome}</td>
+      <td>${v.quantidade}</td>
+      <td>${v.preco.toFixed(2)}</td>
+      <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+      <td>${precoComDesconto.toFixed(2)}</td>
+      <td>${subtotal.toFixed(2)}</td>
+      <td>${v.formaPagamento}</td>
+      <td><button onclick="removerVenda(${i})">Remover</button></td>
+    `;
+  }
+});
+
+// Se você deseja exibir o total do Crediário em algum lugar específico, pode adicionar o seguinte:
+const totalCrediarioSpan = document.getElementById('totalCrediario');
+if (totalCrediarioSpan) {
+  totalCrediarioSpan.textContent = totalCrediario.toFixed(2);
+}
+
       atualizarGrafico('semana');
     }
 
@@ -804,17 +885,61 @@
       }
 
     function filtrarVendas() {
-      const dataFiltro = document.getElementById('filtroData').value;
-      const tabela = document.getElementById('tabelaVendas');
-      const totalSpan = document.getElementById('totalVendido');
-      tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
-      let total = 0;
-      vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach(v => {
-        const subtotal = v.quantidade * v.preco;
-        total += subtotal;
-        tabela.innerHTML += `<tr><td>${v.data}</td><td>${v.nome}</td><td>${v.quantidade}</td><td>${v.preco.toFixed(2)}</td><td>${subtotal.toFixed(2)}</td></tr>`;
-      });
-      totalSpan.textContent = total.toFixed(2);
+  const dataFiltro = document.getElementById('filtroData').value;
+  const tabela = document.getElementById('tabelaVendas');
+  const totalSpan = document.getElementById('totalVendido');
+
+  tabela.innerHTML = `
+    <tr>
+      <th>Data</th>
+      <th>Produto</th>
+      <th>Qtd</th>
+      <th>Preço (R$)</th>
+      <th>Desconto (%)</th>
+      <th>Com Desconto (R$)</th>
+      <th>Total</th>
+      <th>Forma de Pagamento</th>
+      <th>Ações</th>
+    </tr>
+  `;
+
+  let total = 0;
+
+  vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach((v, i) => {
+    const precoComDesconto = v.precoComDesconto || v.preco;
+    const subtotal = v.quantidade * precoComDesconto;
+    total += subtotal;
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${v.data}</td>
+        <td>${v.nome}</td>
+        <td>${v.quantidade}</td>
+        <td>${v.preco.toFixed(2)}</td>
+        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+        <td>${precoComDesconto.toFixed(2)}</td>
+        <td>${subtotal.toFixed(2)}</td>
+        <td>
+          <select onchange="editarFormaPagamento(${i}, this.value)">
+            <option value="">Selecionar</option>
+            <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
+            <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
+            <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
+            <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
+            <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
+          </select>
+        </td>
+        <td><button onclick="removerVenda(${i})">Remover</button></td>
+      </tr>
+    `;
+  });
+
+  totalSpan.textContent = total.toFixed(2);
+}
+
+    function removerFiltro() {
+      document.getElementById('filtroData').value = '';  // Limpa o campo de data
+      atualizarHistorico();  // Recarrega o histórico completo
     }
 
     function gerarRelatorioMensal() {
