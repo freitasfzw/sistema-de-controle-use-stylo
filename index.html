@@ -822,6 +822,7 @@
   const dataFiltro = document.getElementById('filtroData').value;
   const tabela = document.getElementById('tabelaVendas');
   const totalSpan = document.getElementById('totalVendido');
+  const totalPorFormaSpan = document.getElementById('totaisPorForma');
 
   tabela.innerHTML = `
     <tr>
@@ -838,11 +839,17 @@
   `;
 
   let total = 0;
+  let totaisPorForma = {};
 
   vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach((v, i) => {
     const precoComDesconto = v.precoComDesconto || v.preco;
     const subtotal = v.quantidade * precoComDesconto;
     total += subtotal;
+
+    // Acumular valor conforme forma de pagamento
+    const forma = v.formaPagamento || 'Não informado';
+    if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
+    totaisPorForma[forma] += subtotal;
 
     tabela.innerHTML += `
       <tr>
@@ -869,6 +876,14 @@
   });
 
   totalSpan.textContent = total.toFixed(2);
+
+  // Exibir os totais por forma de pagamento
+  let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
+  for (let forma in totaisPorForma) {
+    htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
+  }
+
+  totalPorFormaSpan.innerHTML = htmlTotais;
 }
 
     function removerFiltro() {
@@ -933,7 +948,7 @@
   reader.readAsText(file);  // Lendo o conteúdo do arquivo como texto
 }
 
-    function atualizarGrafico(tipo) {
+function atualizarGrafico(tipo) {
   // Recarrega os dados de vendas do localStorage
   const vendas = JSON.parse(localStorage.getItem('vendas')) || []; // Garantir que estamos usando os dados mais recentes
 
@@ -948,6 +963,10 @@
     const data = new Date(v.data);  // Garantimos que estamos lidando com um objeto Date corretamente
     let chave;
 
+    // Calcular o valor da venda com desconto, se disponível
+    const precoComDesconto = v.precoComDesconto || v.preco;  // Considera o desconto se estiver presente
+    const subtotal = v.quantidade * precoComDesconto;  // Calcular o total considerando o desconto
+
     if (tipo === 'semana') {
       chave = data.toISOString().split('T')[0]; // Garantir que usamos o formato ISO para a data
     } else if (tipo === 'mes') {
@@ -957,7 +976,8 @@
     }
 
     if (!mapa[chave]) mapa[chave] = 0;
-    mapa[chave] += v.quantidade * v.preco;
+    mapa[chave] += subtotal;  // Usa o valor com desconto
+
   });
 
   labels = Object.keys(mapa);
@@ -1002,7 +1022,6 @@
     }
   });
 }
-
     mostrarAba('estoque');
 
     function relatorioPorCategoria() {
