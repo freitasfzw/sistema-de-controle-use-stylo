@@ -266,6 +266,10 @@
 <link rel="icon" href="use-styloo-ico.ico" type="image/x-icon">
 <!--P FIM ICONE DA PAGINA -->
 
+<!--P SCRIPT COMPROVANTE PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!--P FIM SCRIPT COMPROVANTE PDF -->
+
 <!--P SCRIPT FIREBASE -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -367,8 +371,6 @@
       });
   });
 </script>
-
-
 <!--P FIM SCRIPT FIREBASE -->
 
 <!--P SCRIPT GRAFICOS -->
@@ -422,6 +424,7 @@
   <section id="vendas">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Registrar Venda</h2>
     <select id="produtoVenda"></select>
+    <input type="text" id="clienteVenda" placeholder="Nome do Cliente">
     <input type="number" id="quantidadeVenda" placeholder="Quantidade Vendida">
     <label for="descontoVenda">Desconto (%):</label>
 <input type="number" id="descontoVenda" min="0" max="100" placeholder="0">
@@ -937,111 +940,195 @@
     }
 
     function registrarVenda() {
-      const index = document.getElementById('produtoVenda').value;
-      const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
-      const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
-      const formaPagamento = document.getElementById('formaPagamento').value;
+    
+  const index = document.getElementById('produtoVenda').value;
+  const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+  const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
+  const formaPagamento = document.getElementById('formaPagamento').value;
+  const cliente = document.getElementById('clienteVenda').value.trim() || "Cliente Não Informado";
 
-      if (index === '' || isNaN(quantidade)) return alert('Preencha corretamente.');
-      if (index === '' || isNaN(quantidade) || formaPagamento === '') {
-  return alert('Preencha corretamente todos os campos, incluindo a forma de pagamento.');
+  if (index === '' || isNaN(quantidade) || formaPagamento === '') {
+    return alert('Preencha corretamente todos os campos.');
+  }
+
+  const produto = estoque[index];
+  if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+
+  produto.quantidade -= quantidade;
+
+  const hoje = new Date();
+  const data = hoje.toISOString().split('T')[0];
+  const hora = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  vendas.push({
+    nome: produto.nome,
+    quantidade,
+    preco: produto.preco,
+    desconto,
+    precoComDesconto: produto.preco - (produto.preco * desconto / 100),
+    formaPagamento,
+    data,
+    hora,
+    cliente
+  });
+
+  salvarDados();
+  alert('Venda registrada com sucesso!');
+  atualizarSelectProdutos();
+  atualizarHistorico();
 }
-      const produto = estoque[index];
-      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
-
-      produto.quantidade -= quantidade;
-
-      const hoje = new Date();
-      const data = hoje.toISOString().split('T')[0];
-      const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
-
-      vendas.push({
-        nome: produto.nome,
-        quantidade,
-        preco: produto.preco,
-        desconto,
-        precoComDesconto,
-        formaPagamento,
-        data
-      });
-
-      salvarDados();
-      alert('Venda registrada com sucesso!');
-      atualizarSelectProdutos();
-      atualizarHistorico();
-    }
 
     function atualizarHistorico() {
+  const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+
+  const tabela = document.getElementById('tabelaVendas');
+  const totalSpan = document.getElementById('totalVendido');
+  const totalPorFormaSpan = document.getElementById('totaisPorForma');
+
+  tabela.innerHTML = `
+    <tr>
+      <th>Data</th>
+      <th>Produto</th>
+      <th>Qtd</th>
+      <th>Preço (R$)</th>
+      <th>Desconto (%)</th>
+      <th>Com Desconto (R$)</th>
+      <th>Total</th>
+      <th>Forma de Pagamento</th>
+      <th>Ações</th>
+    </tr>
+  `;
+
+  let total = 0;
+  let totaisPorForma = {};
+
+  vendas.forEach((v, i) => {
+    const precoComDesconto = v.precoComDesconto || v.preco;
+    const subtotal = v.quantidade * precoComDesconto;
+    total += subtotal;
+
+    const forma = v.formaPagamento || 'Não informado';
+    if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
+    totaisPorForma[forma] += subtotal;
+
+    tabela.innerHTML += `
+      <tr>
+        <td>${v.data} ${v.hora || ''}</td>
+        <td>${v.nome}</td>
+        <td>${v.quantidade}</td>
+        <td>${v.preco.toFixed(2)}</td>
+        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+        <td>${precoComDesconto.toFixed(2)}</td>
+        <td>${subtotal.toFixed(2)}</td>
+        <td>
+          <select onchange="editarFormaPagamento(${i}, this.value)">
+            <option value="">Selecionar</option>
+            <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
+            <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
+            <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
+            <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
+            <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
+          </select>
+        </td>
+        <td>
+          <button onclick="removerVenda(${i})">Remover</button><br>
+          <button onclick="gerarComprovanteDaVenda(${i})">Comprovante</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  totalSpan.textContent = total.toFixed(2);
+
+  let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
+  for (let forma in totaisPorForma) {
+    htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
+  }
+  htmlTotais += '</ul>';
+  totalPorFormaSpan.innerHTML = htmlTotais;
+
+  atualizarGrafico('semana');
+}
+    
+    function gerarComprovanteDaVenda(index) {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
-
-      const tabela = document.getElementById('tabelaVendas');
-      const totalSpan = document.getElementById('totalVendido');
-      const totalPorFormaSpan = document.getElementById('totaisPorForma');
-
-      tabela.innerHTML = `
-        <tr>
-          <th>Data</th>
-          <th>Produto</th>
-          <th>Qtd</th>
-          <th>Preço (R$)</th>
-          <th>Desconto (%)</th>
-          <th>Com Desconto (R$)</th>
-          <th>Total</th>
-          <th>Forma de Pagamento</th>
-          <th>Ações</th>
-        </tr>
-      `;
-
-      let total = 0;
-      let totaisPorForma = {};
-
-      vendas.forEach((v, i) => {
-        const precoComDesconto = v.precoComDesconto || v.preco;
-        const subtotal = v.quantidade * precoComDesconto;
-        total += subtotal;
-
-        // Acumular valor conforme forma de pagamento
-        const forma = v.formaPagamento || 'Não informado';
-        if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
-        totaisPorForma[forma] += subtotal;
-
-        tabela.innerHTML += `
-          <tr>
-            <td>${v.data}</td>
-            <td>${v.nome}</td>
-            <td>${v.quantidade}</td>
-            <td>${v.preco.toFixed(2)}</td>
-            <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
-            <td>${precoComDesconto.toFixed(2)}</td>
-            <td>${subtotal.toFixed(2)}</td>
-            <td>
-              <select onchange="editarFormaPagamento(${i}, this.value)">
-                <option value="">Selecionar</option>
-                <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
-                <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
-                <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
-                <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
-                <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
-              </select>
-            </td>
-            <td><button onclick="removerVenda(${i})">Remover</button></td>
-          </tr>
-        `;
-      });
-
-      totalSpan.textContent = total.toFixed(2);
-
-      // Exibir os totais por forma de pagamento
-      let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
-      for (let forma in totaisPorForma) {
-        htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
-      }
-
-      totalPorFormaSpan.innerHTML = htmlTotais;
-
-      atualizarGrafico('semana');
+      const venda = vendas[index];
+      gerarComprovante(venda);
     }
 
+    function gerarComprovante(venda) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const precoComDesconto = venda.precoComDesconto !== undefined ? venda.precoComDesconto : venda.preco;
+  const totalPago = venda.quantidade * precoComDesconto;
+
+  // Configurações básicas
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  let y = 10;
+
+  // Cabeçalho
+  doc.setFontSize(14);
+  doc.setTextColor(123, 44, 191);
+  doc.text("USE STYLO", 105, y, { align: "center" });
+  y += 5;
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  doc.text("CNPJ: 00.000.000/0001-00", 105, y, { align: "center" });
+  y += 5;
+  doc.text("Endereço: Rua 7 de Setembro, 478 - Centro, São Pedro do Sul, Rio Grande do Sul, Brazil, 97400000", 105, y, { align: "center" });
+  y += 5;
+  doc.text("Telefone: (55) 99206-1704", 105, y, { align: "center" });
+  y += 10;
+
+  // Linha divisória
+  doc.line(10, y, 200, y);
+  y += 5;
+
+  // Informações da venda
+  doc.text(`Data da emissão: ${venda.data || 'N/A'}`, 10, y);
+  doc.text(`Hora da emissão: ${venda.hora || 'N/A'}`, 150, y);
+  y += 7;
+  if (venda.cliente) {
+    doc.text(`Nome Completo: ${venda.cliente}`, 10, y);
+    y += 7;
+  }
+  
+  doc.line(10, y, 200, y);
+  y += 5;
+
+  // Produto
+  doc.text(`Produto: ${venda.nome || 'N/A'}`, 10, y);
+  y += 7;
+  doc.text(`Quantidade: ${venda.quantidade || '0'}`, 10, y);
+  y += 7;
+  doc.text(`Preço Unitário: R$ ${venda.preco?.toFixed(2) || '0.00'}`, 10, y);
+  y += 7;
+  doc.text(`Desconto: ${venda.desconto !== undefined ? venda.desconto + '%' : '0%'}`, 10, y);
+  y += 7;
+  doc.text(`Preço Final Unitário: R$ ${precoComDesconto.toFixed(2)}`, 10, y);
+  y += 7;
+
+  doc.line(10, y, 200, y);
+  y += 5;
+
+  // Pagamento
+  doc.text(`Forma de Pagamento: ${venda.formaPagamento || 'Não informado'}`, 10, y);
+  y += 7;
+  doc.text(`Total Pago: R$ ${totalPago.toFixed(2)}`, 10, y);
+  y += 10;
+
+  // Agradecimento
+  doc.setFontSize(10);
+  doc.setTextColor(123, 44, 191);
+  doc.text("Obrigado pela preferência!", 105, y, { align: "center" });
+  y += 5;
+  doc.text("- Use o seu Stylo -", 105, y, { align: "center" });
+
+  // Salvar PDF
+  doc.save(`Comprovante_${venda.nome || 'Venda'}_${venda.data || 'data'}.pdf`);
+}
     function editarFormaPagamento(index, novaForma) {
       vendas[index].formaPagamento = novaForma;
       salvarDados();
