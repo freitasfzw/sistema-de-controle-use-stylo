@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Use Stylo - Sistema de Vendas</title>
   <style>
-
     :root {
       --branco: #F0F0F0;
       --preto: #000000;
@@ -18,7 +18,7 @@
       --principal2: #9B59B6;
       --principal3: #BB6BD9;
     }
-    
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -26,12 +26,12 @@
       background: linear-gradient(to bottom, var(--background2), var(--preto));
       color: var(--branco);
     }
-    
+
     h1 {
       text-align: center;
       color: var(--branco);
     }
-    
+
     nav {
       display: flex;
       flex-wrap: wrap;
@@ -39,7 +39,7 @@
       gap: 10px;
       margin-bottom: 10px;
     }
-    
+
     nav button {
       padding: 12px 24px;
       font-size: 1rem;
@@ -49,26 +49,26 @@
       color: var(--branco);
       border: 1px solid var(--borda);
     }
-    
+
     nav button:hover {
       background-color: var(--principal);
       color: var(--branco);
       transition: all 0.3s ease;
     }
-    
+
     section {
       display: none;
       background: var(--fundo1);
       padding: 20px;
       margin-top: 10px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     }
-    
+
     section.active {
       display: block;
     }
-    
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -76,17 +76,21 @@
       overflow-x: auto;
       color: var(--branco);
     }
-    
-    table, th, td {
+
+    table,
+    th,
+    td {
       border: 1px solid var(--borda);
     }
-    
-    th, td {
+
+    th,
+    td {
       padding: 8px;
       text-align: left;
     }
-    
-    input, select {
+
+    input,
+    select {
       padding: 7px;
       margin: 5px 0;
       width: 100%;
@@ -96,7 +100,7 @@
       background: var(--background2);
       color: var(--branco);
     }
-    
+
     button {
       background: var(--preto);
       color: var(--branco);
@@ -107,31 +111,33 @@
       transition: all 0.3s ease;
       cursor: pointer;
     }
-    
+
     button:hover {
       background-color: var(--principal);
       color: var(--branco);
       transition: all 0.3s ease;
     }
-    
+
     @media (max-width: 600px) {
       body {
         padding: 10px;
       }
+
       table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
       }
+
       nav button {
         flex: 1 1 100%;
       }
     }
-    
+
     /*! ------------------------------- */
     /*! Informações para Footer         */
     /*! ------------------------------- */
-    
+
     .footer {
       display: flex;
       justify-content: center;
@@ -141,32 +147,32 @@
       background-color: var(--preto);
       color: var(--branco);
     }
-    
+
     .footer .footer1 {
       display: flex;
       justify-content: space-evenly;
       width: 100%;
     }
-    
+
     .footer .footer1 a {
       color: var(--principal);
       text-decoration: none;
     }
-    
+
     .footer .footer1 a:hover {
       color: var(--backgroud1);
       text-decoration-line: underline;
       transition: all .50s ease;
     }
-    
+
     .footer .footer1 span a {
       color: var(--principal);
     }
-    
+
     /*! ------------------------------- */
     /*! Informações para Commits        */
     /*! ------------------------------- */
-    
+
     .changelog-container {
       width: 80%;
       margin: 30px auto;
@@ -176,12 +182,12 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
       color: var(--branco);
     }
-    
+
     .changelog-header {
       text-align: center;
       color: var(--principal);
     }
-    
+
     .changelog-entry {
       margin-bottom: 20px;
       padding: 15px;
@@ -189,47 +195,47 @@
       border-radius: 6px;
       background-color: var(--background2);
     }
-    
+
     .changelog-entry h3 {
       margin: 0;
       font-size: 1.2em;
       color: var(--principal);
     }
-    
+
     .changelog-entry p {
       margin: 10px 0 0;
       font-size: 1em;
       color: var(--branco);
     }
-    
+
     .changelog-entry .changelog-date {
       font-size: 0.9em;
       color: var(--principal3);
     }
-    
+
     .changelog-entry .changelog-header {
       font-weight: bold;
     }
-    
+
     .changelog-entry .update-list {
       margin-top: 10px;
       list-style: none;
       padding-left: 20px;
     }
-    
+
     .changelog-entry .update-list li {
       margin: 5px 0;
       font-size: 1em;
       color: var(--branco);
     }
-    
+
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -243,7 +249,7 @@
       border-radius: 10px;
       text-align: center;
       max-width: 400px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
     .modal-content button {
@@ -259,154 +265,157 @@
     .modal-content button:hover {
       background: #8b00d6;
     }
-    </style>
-    
+  </style>
 
-<!--P ICONE DA PAGINA -->
-<link rel="icon" href="use-styloo-ico.ico" type="image/x-icon">
-<!--P FIM ICONE DA PAGINA -->
 
-<!--P SCRIPT COMPROVANTE PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!--P FIM SCRIPT COMPROVANTE PDF -->
+  <!--P ICONE DA PAGINA -->
+  <link rel="icon" href="use-styloo-ico.ico" type="image/x-icon">
+  <!--P FIM ICONE DA PAGINA -->
 
-<!--P SCRIPT FIREBASE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+  <!--P SCRIPT COMPROVANTE PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!--P FIM SCRIPT COMPROVANTE PDF -->
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCprBTe8SI2yzWrCbiDqPo_quY6gtepSZ0",
-    authDomain: "vendas-loja-use-stylo.firebaseapp.com",
-    databaseURL: "https://vendas-loja-use-stylo-default-rtdb.firebaseio.com",
-    projectId: "vendas-loja-use-stylo",
-    storageBucket: "vendas-loja-use-stylo.appspot.com",
-    messagingSenderId: "752808111854",
-    appId: "1:752808111854:web:319ce58624153fb5818dff",
-    measurementId: "G-SD289DZZVK"
-  };
+  <!--P SCRIPT FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
-  // Inicializa Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getDatabase(app);
-
-  // Declare crediarios aqui
-  let crediarios = [];
-
-  // 🟢 Expondo no window
-  window.firebaseApp = app;
-  window.analytics = analytics;
-  window.db = db;
-  window.ref = ref;
-  window.set = set;
-  window.get = get;
-  window.child = child;
-
-  // Exportar para Firebase (estoque, vendas e crediários)
-  window.exportarParaFirebase = () => {
-    const dados = {
-      estoque,
-      vendas,
-      crediarios: JSON.parse(localStorage.getItem('crediarios')) || [],  // Pega os crediários do localStorage
-      ultimaAtualizacao: new Date().toLocaleString('pt-BR')
+    const firebaseConfig = {
+      apiKey: "AIzaSyCprBTe8SI2yzWrCbiDqPo_quY6gtepSZ0",
+      authDomain: "vendas-loja-use-stylo.firebaseapp.com",
+      databaseURL: "https://vendas-loja-use-stylo-default-rtdb.firebaseio.com",
+      projectId: "vendas-loja-use-stylo",
+      storageBucket: "vendas-loja-use-stylo.appspot.com",
+      messagingSenderId: "752808111854",
+      appId: "1:752808111854:web:319ce58624153fb5818dff",
+      measurementId: "G-SD289DZZVK"
     };
 
-    window.set(window.ref(window.db, 'backup'), dados)
-      .then(() => {
-        alert("Backup salvo na nuvem com sucesso!");
-        document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
-      })
-      .catch((erro) => console.error("Erro ao salvar no Firebase:", erro));
-  };
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app);
 
-  // Importar do Firebase (estoque, vendas e crediários)
-  window.importarDoFirebase = () => {
-    window.get(window.child(window.ref(window.db), 'backup'))
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          const dados = snapshot.val();
-          console.log(dados);
-          
-          if (dados) {
-            estoque = dados.estoque || [];
-            vendas = dados.vendas || [];
-            crediarios = dados.crediarios || [];
-            localStorage.setItem('crediarios', JSON.stringify(crediarios));
-            salvarDados?.();
-            atualizarSelectProdutos?.();
-            atualizarHistorico?.();
-            carregarCrediarios();
-            if (dados.ultimaAtualizacao) {
-              document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+    // Declare crediarios aqui
+    let crediarios = [];
+
+    // 🟢 Expondo no window
+    window.firebaseApp = app;
+    window.analytics = analytics;
+    window.db = db;
+    window.ref = ref;
+    window.set = set;
+    window.get = get;
+    window.child = child;
+
+    // Exportar para Firebase (estoque, vendas e crediários)
+    window.exportarParaFirebase = () => {
+      const dados = {
+        estoque,
+        vendas,
+        crediarios: JSON.parse(localStorage.getItem('crediarios')) || [],  // Pega os crediários do localStorage
+        ultimaAtualizacao: new Date().toLocaleString('pt-BR')
+      };
+
+      window.set(window.ref(window.db, 'backup'), dados)
+        .then(() => {
+          alert("Backup salvo na nuvem com sucesso!");
+          document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+        })
+        .catch((erro) => console.error("Erro ao salvar no Firebase:", erro));
+    };
+
+    // Importar do Firebase (estoque, vendas e crediários)
+    window.importarDoFirebase = () => {
+      window.get(window.child(window.ref(window.db), 'backup'))
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const dados = snapshot.val();
+            console.log(dados);
+
+            if (dados) {
+              estoque = dados.estoque || [];
+              vendas = dados.vendas || [];
+              crediarios = dados.crediarios || [];
+              localStorage.setItem('crediarios', JSON.stringify(crediarios));
+              salvarDados?.();
+              atualizarSelectProdutos?.();
+              atualizarHistorico?.();
+              carregarCrediarios();
+              if (dados.ultimaAtualizacao) {
+                document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+              }
+
+              alert("Backup importado da nuvem com sucesso!");
+            } else {
+              alert("Não há dados no backup.");
             }
-
-            alert("Backup importado da nuvem com sucesso!");
           } else {
-            alert("Não há dados no backup.");
+            alert("Nenhum backup encontrado na nuvem.");
           }
-        } else {
-          alert("Nenhum backup encontrado na nuvem.");
-        }
-      })
-      .catch((erro) => {
-        console.error("Erro ao importar do Firebase:", erro);
-        alert("Houve um erro ao tentar importar os dados.");
-      });
+        })
+        .catch((erro) => {
+          console.error("Erro ao importar do Firebase:", erro);
+          alert("Houve um erro ao tentar importar os dados.");
+        });
 
-  };
+    };
 
-  // Mostrar data do último backup ao carregar
-  window.addEventListener('DOMContentLoaded', () => {
-    get(child(ref(db), 'backup'))
-      .then(snapshot => {
-        if (snapshot.exists() && snapshot.val().ultimaAtualizacao) {
-          document.getElementById('ultimaDataBackup').textContent = `Último backup: ${snapshot.val().ultimaAtualizacao}`;
-        }
-      })
-      .catch((erro) => {
-        console.error("Erro ao carregar a data do último backup:", erro);
-        alert("Houve um erro ao tentar carregar a data do último backup.");
-      });
-  });
-</script>
-<!--P FIM SCRIPT FIREBASE -->
+    // Mostrar data do último backup ao carregar
+    window.addEventListener('DOMContentLoaded', () => {
+      get(child(ref(db), 'backup'))
+        .then(snapshot => {
+          if (snapshot.exists() && snapshot.val().ultimaAtualizacao) {
+            document.getElementById('ultimaDataBackup').textContent = `Último backup: ${snapshot.val().ultimaAtualizacao}`;
+          }
+        })
+        .catch((erro) => {
+          console.error("Erro ao carregar a data do último backup:", erro);
+          alert("Houve um erro ao tentar carregar a data do último backup.");
+        });
+    });
+  </script>
+  <!--P FIM SCRIPT FIREBASE -->
 
-<!--P SCRIPT GRAFICOS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!--P FIM SCRIPT GRAFICOS -->
+  <!--P SCRIPT GRAFICOS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!--P FIM SCRIPT GRAFICOS -->
 </head>
+
 <body>
 
-<!--! AVISOS DO SISTEMA -->
+  <!--! AVISOS DO SISTEMA -->
   <div id="avisoModal" class="modal-overlay">
     <div class="modal-content">
       <h2>Bem-vindo ao Sistema de Controle Use Stylo!</h2>
-      <p>Certifique-se de ter cuidado com o que está alterando ou adicionando, toda alteração que for <strong style="color: var(--principal);">Exportada ou Importada</strong> para a nuvem será permanente.</p>
+      <p>Certifique-se de ter cuidado com o que está alterando ou adicionando, toda alteração que for <strong
+          style="color: var(--principal);">Exportada ou Importada</strong> para a nuvem será permanente.</p>
       <br>
-      <p>Para soluções de problemas ou dúvidas, entre em contato de imediato com o <a style="color: var(--principal);" href="https://github.com/freitasfzw/"><strong>Administrador do Sistema</strong></a>.</p>
+      <p>Para soluções de problemas ou dúvidas, entre em contato de imediato com o <a style="color: var(--principal);"
+          href="https://github.com/freitasfzw/"><strong>Administrador do Sistema</strong></a>.</p>
       <button onclick="fecharAviso()">Ok</button>
     </div>
   </div>
-<!--! FIM AVISOS DO SISTEMA-->
+  <!--! FIM AVISOS DO SISTEMA-->
 
-<!--! TITULO PRINCIPAL -->
-    <h1>Sistema de Controle Use Stylo</h1>
-<!--! FIM TITULO PRINCIPAL -->
+  <!--! TITULO PRINCIPAL -->
+  <h1>Sistema de Controle Use Stylo</h1>
+  <!--! FIM TITULO PRINCIPAL -->
 
-<!--! MENU -->
-    <nav>
-      <button onclick="mostrarAba('estoque')">Estoque</button>
-      <button onclick="mostrarAba('vendas')">Registrar Venda</button>
-      <button onclick="mostrarAba('crediario')">Crediario</button>
-      <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
-      <button onclick="mostrarAba('historico')">Painel de Controle</button>
-      <button><a style="color: var(--branco); text-decoration: none;" href="#atualizaçoes">Atualizações</a></button>
-    </nav>
-<!--! FIM MENU -->
+  <!--! MENU -->
+  <nav>
+    <button onclick="mostrarAba('estoque')">Estoque</button>
+    <button onclick="mostrarAba('vendas')">Registrar Venda</button>
+    <button onclick="mostrarAba('crediario')">Crediario</button>
+    <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
+    <button onclick="mostrarAba('historico')">Painel de Controle</button>
+    <button><a style="color: var(--branco); text-decoration: none;" href="#atualizaçoes">Atualizações</a></button>
+  </nav>
+  <!--! FIM MENU -->
 
-<!--! MENU ESTOQUE -->
+  <!--! MENU ESTOQUE -->
   <section id="estoque">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Cadastro de Produto</h2>
     <input type="text" id="nomeProduto" placeholder="Nome do Produto">
@@ -418,16 +427,16 @@
 
 
   </section>
-<!--! FIM MENU ESTOQUE -->
+  <!--! FIM MENU ESTOQUE -->
 
-<!--! MENU VENDAS -->
+  <!--! MENU VENDAS -->
   <section id="vendas">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Registrar Venda</h2>
     <select id="produtoVenda"></select>
     <input type="text" id="clienteVenda" placeholder="Nome do Cliente">
     <input type="number" id="quantidadeVenda" placeholder="Quantidade Vendida">
     <label for="descontoVenda">Desconto (%):</label>
-<input type="number" id="descontoVenda" min="0" max="100" placeholder="0">
+    <input type="number" id="descontoVenda" min="0" max="100" placeholder="0">
 
     <div class="form-group">
       <label for="formaPagamento">Forma de Pagamento</label>
@@ -445,57 +454,58 @@
     <div class="main-container">
       <h1>Calculadora de Troco</h1>
     </div>
-  
+
     <div id="calculadora" class="container">
       <div class="header">
       </div>
       <br>
-  
+
       <div class="input-group">
         <label>Valor da compra</label>
         <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
       </div>
-  
+
       <div class="input-group">
         <label>Valor pago</label>
         <input type="number" id="valorPago" placeholder="Ex: 50.00" />
       </div>
-  
+
       <button onclick="calcularTroco()">Calcular Troco</button>
-  
+
       <div id="resultado" class="resultado"></div>
     </div>
 
 
   </section>
-<!--! FIM MENU VENDAS -->
+  <!--! FIM MENU VENDAS -->
 
-<!--! MENU CREDIARIO -->
+  <!--! MENU CREDIARIO -->
   <section id="crediario">
     <h2 style="justify-content: center; align-items: center; text-align: center">Crediarios</h2>
 
 
   </section>
-<!--! FIM MENU CREDIARIO -->
+  <!--! FIM MENU CREDIARIO -->
 
-<!--! MENU NUVEM -->
-<section id="nuvem">
-  <h2 style="justify-content: center; align-items: center; text-align: center;">Nuvem de Dados</h2>
+  <!--! MENU NUVEM -->
+  <section id="nuvem">
+    <h2 style="justify-content: center; align-items: center; text-align: center;">Nuvem de Dados</h2>
 
-  <h3 style="color: var(--principal); font-size: 15px;">Toda ação é irreversivel pois não existe backup no banco de dados!</h3>
-  <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
-  <br><br>
+    <h3 style="color: var(--principal); font-size: 15px;">Toda ação é irreversivel pois não existe backup no banco de
+      dados!</h3>
+    <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
+    <br><br>
 
-  <button onclick="importarDoFirebase()">Carregar Dados Salvos da Nuvem</button>
-  <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
+    <button onclick="importarDoFirebase()">Carregar Dados Salvos da Nuvem</button>
+    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
 
-</section>
-<!--! FIM MENU NUVEM -->
+  </section>
+  <!--! FIM MENU NUVEM -->
 
-<!--! MENU HISTORICO -->
+  <!--! MENU HISTORICO -->
   <section id="historico">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Histórico de Vendas</h2>
-    <label>Filtrar por data:</label>  
+    <label>Filtrar por data:</label>
     <input type="date" id="filtroData">
     <button onclick="filtrarVendas()">Filtrar</button>
     <button onclick="removerFiltro()">Remover Filtro</button>
@@ -508,7 +518,8 @@
     <div id="totaisPorForma"></div>
     <h3>Total Vendido: R$ <span id="totalVendido">0,00</span></h3>
 
-    <p id="valorTotalEstoque" style="margin-top: 10px; font-weight: bold; font-size: 20px;">Valor Total em Estoque: R$ 0,00</p>
+    <p id="valorTotalEstoque" style="margin-top: 10px; font-weight: bold; font-size: 20px;">Valor Total em Estoque: R$
+      0,00</p>
 
     <h3 style="justify-content: center; align-items: center; text-align: center;">Gráfico de Vendas</h3>
     <button onclick="atualizarGrafico('semana')">Semanal</button>
@@ -517,11 +528,11 @@
     <canvas id="graficoVendas" height="100"></canvas>
     <canvas id="graficoSemanal" height="100"></canvas>
   </section>
-<!--! FIM MENU HISTORICO -->
+  <!--! FIM MENU HISTORICO -->
 
-<!--! ATUALIZAÇÕES DO SISTEMA -->
-<div class="changelog-container" id="atualizaçoes">
-  <h1 class="changelog-header">Histórico de Atualizações</h1>
+  <!--! ATUALIZAÇÕES DO SISTEMA -->
+  <div class="changelog-container" id="atualizaçoes">
+    <h1 class="changelog-header">Histórico de Atualizações</h1>
 
     <!-- Versão Final 2.1.0 -->
     <div class="changelog-entry">
@@ -531,13 +542,14 @@
       <ul class="update-list">
         <li>1. Remoção sistema de login.</li>
       </ul>
-  
+
       <p class="changelog-date">28 de Abril de 2025</p>
       <p class="changelog-header">Novidades:</p>
       <ul class="update-list">
         <li>1. Adicionado sistema de segurança sem necessidade de sistema de login.</li>
         <li>2. Adicionado sistema de gerar comprovante da compra.</li>
-        <li>3. Adicionado sistema de impressão de comprovante automatico ao finalizar uma venda(requer Mini Impressora para imprimir o comprovante como se fosse maquina de cartão.)</li>
+        <li>3. Adicionado sistema de impressão de comprovante automatico ao finalizar uma venda(requer Mini Impressora
+          para imprimir o comprovante como se fosse maquina de cartão.)</li>
         <li>4. Adicionado sistema de informar nome da venda + Opção de exibir horário que foi efetuada a venda.</li>
       </ul>
 
@@ -548,140 +560,179 @@
       <p class="changelog-date">17 de Abril de 2025</p>
       <p class="changelog-header">Correções:</p>
       <ul class="update-list">
-        <li>1. Corrigido ao filtrar por data, o sistema não carregava os botões de opção sobre as vendas.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-        <li>2. Corrigida a lógica de exibição formas de pagamento ao filtrar as vendas por data.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-        <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente com os descontos aplicados na venda.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-        <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem sobre os Dados do Crediarios.<strong style="color: var(--principal);">(Nuvem)</strong></li>
+        <li>1. Corrigido ao filtrar por data, o sistema não carregava os botões de opção sobre as vendas.<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>2. Corrigida a lógica de exibição formas de pagamento ao filtrar as vendas por data.<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente com os descontos
+          aplicados na venda.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem sobre os Dados do
+          Crediarios.<strong style="color: var(--principal);">(Nuvem)</strong></li>
       </ul>
-  
+
       <p class="changelog-date">17 de Abril de 2025</p>
       <p class="changelog-header">Novidades:</p>
       <ul class="update-list">
         <li>1. Adicionada aba Crediario.<strong style="color: var(--principal);">(Crediario)</strong></li>
-        <li>2. Adicionado sistema de registro de Dados do Crediario(és de extrema importância ressaltar que, ao realizar uma venda na aba Registrar Venda com a forma de pagamento desejeada como: Crediario, é necessario adicionar as informações extras do individuo através da aba Crediarios), a onde será possivel registrar dados pessoais do individuo e realizar o pagamento das faturas do mesmo.<strong style="color: var(--principal);">(Crediario)</strong></li>
+        <li>2. Adicionado sistema de registro de Dados do Crediario(és de extrema importância ressaltar que, ao realizar
+          uma venda na aba Registrar Venda com a forma de pagamento desejeada como: Crediario, é necessario adicionar as
+          informações extras do individuo através da aba Crediarios), a onde será possivel registrar dados pessoais do
+          individuo e realizar o pagamento das faturas do mesmo.<strong
+            style="color: var(--principal);">(Crediario)</strong></li>
         <li>3. Adicionada aba Nuvem.<strong style="color: var(--principal);">(Nuvem)</strong></li>
-        <li>4. Adicionado sistema a onde os Dados do Crediario são Salvos/Carregados da nuvem em perfeito estado.<strong style="color: var(--principal);">(Nuvem)</strong></li>
-        <li>5. Adicionado sistema de CALCULADORA DE TROCO, a onde será possível agora, manualmente informar o valor da venda, o valor que foi recebido do comprador e receber o valor que deve ser devolvido ao mesmo.<strong style="color: var(--principal);">(Registrar Venda)</strong></li>
+        <li>4. Adicionado sistema a onde os Dados do Crediario são Salvos/Carregados da nuvem em perfeito estado.<strong
+            style="color: var(--principal);">(Nuvem)</strong></li>
+        <li>5. Adicionado sistema de CALCULADORA DE TROCO, a onde será possível agora, manualmente informar o valor da
+          venda, o valor que foi recebido do comprador e receber o valor que deve ser devolvido ao mesmo.<strong
+            style="color: var(--principal);">(Registrar Venda)</strong></li>
         <li>6. Adicionado aba Atualizações.<strong style="color: var(--principal);">(Atualizaçoes)</strong></li>
-    </ul>
+      </ul>
     </div>
-  <!-- [BETA] Versão 1.1.0 -->
-  <div class="changelog-entry">
-    <h3>[BETA] Versão 1.1.0 - Correção de Bug + Adição de Útilitários</h3>
-    <p class="changelog-date">14 de Abril de 2025</p>
-    <p class="changelog-header">Correções:</p>
-    <ul class="update-list">
-      <li>1. Corrigido o erro de informações undefined no histórico de vendas ao registrar a forma de pagamento.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      <li>2. Corrigida a lógica de exibição de produtos pagos no histórico de vendas, garantindo a precisão das informações.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem.<strong style="color: var(--principal);">(Nuvem)</strong></li>
-    </ul>
+    <!-- [BETA] Versão 1.1.0 -->
+    <div class="changelog-entry">
+      <h3>[BETA] Versão 1.1.0 - Correção de Bug + Adição de Útilitários</h3>
+      <p class="changelog-date">14 de Abril de 2025</p>
+      <p class="changelog-header">Correções:</p>
+      <ul class="update-list">
+        <li>1. Corrigido o erro de informações undefined no histórico de vendas ao registrar a forma de
+          pagamento.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>2. Corrigida a lógica de exibição de produtos pagos no histórico de vendas, garantindo a precisão das
+          informações.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>3. Corrigido problema de exibição do gráfico, garantindo que ele seja exibido corretamente.<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>4. Corrigido problema ao tentar realizar uma exportação de dados para a Nuvem.<strong
+            style="color: var(--principal);">(Nuvem)</strong></li>
+      </ul>
 
-    <p class="changelog-date">14 de Abril de 2025</p>
-    <p class="changelog-header">Novidades:</p>
-    <ul class="update-list">
-      <li>1. Adicionado estilização de tons mais escuros de preto com detalhes em roxo para criar um tema dark, com ajustes nas cores de fundo, texto e bordas.<strong style="color: var(--principal);">(Sistema De Controle Use Stylo)</strong></li>
+      <p class="changelog-date">14 de Abril de 2025</p>
+      <p class="changelog-header">Novidades:</p>
+      <ul class="update-list">
+        <li>1. Adicionado estilização de tons mais escuros de preto com detalhes em roxo para criar um tema dark, com
+          ajustes nas cores de fundo, texto e bordas.<strong style="color: var(--principal);">(Sistema De Controle Use
+            Stylo)</strong></li>
 
-      <li>2. Adicionado na estrutura do menu e das seções, com botões maiores e mais espaçados para facilitar a navegação. Ajustes nas tabelas de estoque e vendas para uma visualização mais limpa.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
-      
-      <li>3. Adicionado transições suaves nos botões e links, com feedback visual ao passar o mouse. Implementação de responsividade para dispositivos móveis, ajustando o layout automaticamente.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+        <li>2. Adicionado na estrutura do menu e das seções, com botões maiores e mais espaçados para facilitar a
+          navegação. Ajustes nas tabelas de estoque e vendas para uma visualização mais limpa.<strong
+            style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
 
-      <li>4. Adicionado Sistema de separação do valor total exibido no Registro de Venda, agora separado por Dinheiro, Pix, Cartão-Débito, Cartão-Crédito, Crediario, Valor Total.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>3. Adicionado transições suaves nos botões e links, com feedback visual ao passar o mouse. Implementação de
+          responsividade para dispositivos móveis, ajustando o layout automaticamente.<strong
+            style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
 
-      <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de confusão ou alteração).<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>4. Adicionado Sistema de separação do valor total exibido no Registro de Venda, agora separado por Dinheiro,
+          Pix, Cartão-Débito, Cartão-Crédito, Crediario, Valor Total.<strong style="color: var(--principal);">(Painel de
+            Controle)</strong></li>
 
-      <li>6. Adicionado valor total de Estoque dos Produtos.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      
-  </ul>
-  </div>
+        <li>5. Adicionado Opção de alterar a Forma de Pagamento manualmente de cada produto do historico(em casos de
+          confusão ou alteração).<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
 
-  <!-- [BETA] Versão 1.0.1 -->
-  <div class="changelog-entry">
-    <h3>[BETA] Versão 1.0.1 - Correção de Bug + Adição Formas de Pagamento</h3>
-    <p class="changelog-date">12 de Abril de 2025</p>
-    <p class="changelog-header">Correções:</p>
-    <ul class="update-list">
-      <li>1. Corrigido erro no gráfico de vendas, que mostrava as vendas com um dia de atraso.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      <li>2. Ajustado a manipulação de datas no histórico de vendas para evitar discrepâncias.<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-      <li>3. Agora os dados do gráfico de vendas, a função a onde era exibido os <strong>DIA DA SEMANA/DIA DO MÊS/MÊS DO ANO</strong>, foi alterada para o formato <strong>DIA DA VENDA/MÊS/ANO</strong><strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-    </ul>
+        <li>6. Adicionado valor total de Estoque dos Produtos.<strong style="color: var(--principal);">(Painel de
+            Controle)</strong></li>
+
+      </ul>
+    </div>
+
+    <!-- [BETA] Versão 1.0.1 -->
+    <div class="changelog-entry">
+      <h3>[BETA] Versão 1.0.1 - Correção de Bug + Adição Formas de Pagamento</h3>
+      <p class="changelog-date">12 de Abril de 2025</p>
+      <p class="changelog-header">Correções:</p>
+      <ul class="update-list">
+        <li>1. Corrigido erro no gráfico de vendas, que mostrava as vendas com um dia de atraso.<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>2. Ajustado a manipulação de datas no histórico de vendas para evitar discrepâncias.<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+        <li>3. Agora os dados do gráfico de vendas, a função a onde era exibido os <strong>DIA DA SEMANA/DIA DO MÊS/MÊS
+            DO ANO</strong>, foi alterada para o formato <strong>DIA DA VENDA/MÊS/ANO</strong><strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+      </ul>
       <p class="changelog-date">12 de Abril de 2025</p>
       <p class="changelog-header">Novidades:</p>
       <ul class="update-list">
-        <li>1. Adicionado opção de selecionar a Forma de Pagamento na hora de registrar a venda do produto. tendo a possibilidade de escolher entre as seguintes opções: Dinheiro, Pix, Cartão, Outro.<strong style="color: var(--principal);">(Registrar Venda)</strong></li>
-        <li>2. Adicionado ao <strong>Painel de Controle</strong> a opção de pagamento da venda do produto<strong style="color: var(--principal);">(Painel de Controle)</strong></li>
-    </ul>
+        <li>1. Adicionado opção de selecionar a Forma de Pagamento na hora de registrar a venda do produto. tendo a
+          possibilidade de escolher entre as seguintes opções: Dinheiro, Pix, Cartão, Outro.<strong
+            style="color: var(--principal);">(Registrar Venda)</strong></li>
+        <li>2. Adicionado ao <strong>Painel de Controle</strong> a opção de pagamento da venda do produto<strong
+            style="color: var(--principal);">(Painel de Controle)</strong></li>
+      </ul>
+    </div>
+
+    <!-- [BETA] Versão 1.0.0 -->
+    <div class="changelog-entry">
+      <h3>[BETA] Versão 1.0.0 - Lançamento Inicial</h3>
+      <p class="changelog-date">10 de Abril de 2025</p>
+      <p class="changelog-header">Novidades:</p>
+      <ul class="update-list">
+        <li>1. Implementado sistema de cadastro de produtos e controle de estoque.<strong
+            style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+        <li>2. Desenvolvido módulo de vendas com registro de transações e histórico de vendas.<strong
+            style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+        <li>3. Adicionada funcionalidade de gráficos para acompanhamento de vendas por período.<strong
+            style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+        <li>3. Adicionada funcionalidade de importar e exportar os dados do navegador(venda,estoque, historico) para um
+          banco de dados.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
+      </ul>
+    </div>
+
   </div>
+  <!--! FIM ATUALIZAÇÕES DO SISTEMA -->
 
-  <!-- [BETA] Versão 1.0.0 -->
-  <div class="changelog-entry">
-    <h3>[BETA] Versão 1.0.0 - Lançamento Inicial</h3>
-    <p class="changelog-date">10 de Abril de 2025</p>
-    <p class="changelog-header">Novidades:</p>
-    <ul class="update-list">
-      <li>1. Implementado sistema de cadastro de produtos e controle de estoque.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
-      <li>2. Desenvolvido módulo de vendas com registro de transações e histórico de vendas.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
-      <li>3. Adicionada funcionalidade de gráficos para acompanhamento de vendas por período.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
-      <li>3. Adicionada funcionalidade de importar e exportar os dados do navegador(venda,estoque, historico) para um banco de dados.<strong style="color: var(--principal);">(Sistema de Controle Use Stylo)</strong></li>
-    </ul>
-  </div>
-
-</div>
-<!--! FIM ATUALIZAÇÕES DO SISTEMA -->
-
-<!--! FOOTER -->
+  <!--! FOOTER -->
   <div class="footer">
     <div class="footer1">
-        <span>
-            <strong>
-                Copyright &#169; 2025 
-            </strong> 
-                <a href="http://www.linksite.com">
-                    <strong>
-                               
-                    </strong>
-                </a> 
-            <strong>
-                Todos os Direitos Reservados.
-            </strong>
+      <span>
+        <strong>
+          Copyright &#169; 2025
+        </strong>
+        <a href="http://www.linksite.com">
+          <strong>
+
+          </strong>
+        </a>
+        <strong>
+          Todos os Direitos Reservados.
+        </strong>
+      </span>
+
+      <span>
+        <span style="color: var(--branco);">
+          <strong>Powered By</strong>
         </span>
 
-        <span>
-            <span style="color: var(--branco);">
-                <strong>Powered By</strong>
-            </span>
-
-            <a href="https://github.com/freitasfzw/" target="_blank">
-                <span style="color: var(--principal);">
-                    <strong>Freitas Fzw</strong>
-                </span>
-            </a>
-        </span>
+        <a href="https://github.com/freitasfzw/" target="_blank">
+          <span style="color: var(--principal);">
+            <strong>Freitas Fzw</strong>
+          </span>
+        </a>
+      </span>
 
 
     </div>
   </div>
 
-<!--! FIM FOOTER -->
+  <!--! FIM FOOTER -->
 
-<!--! PAINEL DE SENHA -->
-  <div id="senhaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-    <div style="background:var(--background2); padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
+  <!--! PAINEL DE SENHA -->
+  <div id="senhaModal"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    <div
+      style="background:var(--background2); padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
       <h3>Senha Necessária</h3>
-      <input type="password" id="senhaInput" placeholder="Digite a senha" style="width:80%; padding:10px; margin:10px 0;">
+      <input type="password" id="senhaInput" placeholder="Digite a senha"
+        style="width:80%; padding:10px; margin:10px 0;">
       <button onclick="verificarSenha()">Entrar</button>
       <button onclick="fecharModalSenha()">Cancelar</button>
     </div>
   </div>
-<!--! FIM PAINEL DE SENHA -->
+  <!--! FIM PAINEL DE SENHA -->
 
-<!--? SCRIPT -->
+  <!--? SCRIPT -->
   <script>
-      window.db
-      window.ref
-      window.set
-      window.get
-      window.child
+    window.db
+    window.ref
+    window.set
+    window.get
+    window.child
 
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
     let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
@@ -738,21 +789,21 @@
     function montarCrediario() {
       const section = document.getElementById('crediario');
       section.innerHTML += `
-        <div id="formCrediario" style="margin: 20px; display: flex; flex-direction: column; gap: 10px">
-          <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
-          <input type="text" id="cpfCliente" placeholder="CPF">
-          <input type="text" id="produtosComprados" placeholder="Produtos Comprados">
-          <input type="text" id="valorCompra" placeholder="Valor da Compra">
-          <input type="date" id="dataCompra">
-          <input type="number" id="diaPagamento" placeholder="Dia do Mês de Pagamento" min="1" max="31">
-          <input type="number" id="parcelasTotais" placeholder="Número de Parcelas" min="1">
-          <button onclick="adicionarCrediario()">Salvar Crediário</button>
-        </div>
+    <div id="formCrediario" style="margin: 20px; display: flex; flex-direction: column; gap: 10px">
+      <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+      <input type="text" id="cpfCliente" placeholder="CPF">
+      <input type="text" id="produtosComprados" placeholder="Produtos Comprados">
+      <input type="text" id="valorCompra" placeholder="Valor da Compra">
+      <input type="date" id="dataCompra">
+      <input type="number" id="diaPagamento" placeholder="Dia do Mês de Pagamento" min="1" max="31">
+      <input type="number" id="parcelasTotais" placeholder="Número de Parcelas" min="1">
+      <button onclick="adicionarCrediario()">Salvar Crediário</button>
+    </div>
 
-        <div id="listaCrediarios" style="margin-top: 30px">
-          <h3 style="text-align:center">Clientes no Crediário</h3>
-        </div>
-      `;
+    <div id="listaCrediarios" style="margin-top: 30px">
+      <h3 style="text-align:center">Clientes no Crediário</h3>
+    </div>
+  `;
 
       carregarCrediarios();
     }
@@ -800,19 +851,19 @@
         const valorParcela = (parseFloat(c.valor) / c.parcelasTotais).toFixed(2);
 
         listaDiv.innerHTML += `
-          <div style="border: 1px solid #444; border-radius: 8px; padding: 10px; margin: 10px 0; background: #222">
-            <p><strong>Nome:</strong> ${c.nome}</p>
-            <p><strong>CPF:</strong> ${c.cpf}</p>
-            <p><strong>Produtos:</strong> ${c.produtos}</p>
-            <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valor).toFixed(2)}</p>
-            <p><strong>Valor Parcela:</strong> R$ ${valorParcela}</p>
-            <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
-            <p><strong>Dia Pagamento:</strong> ${c.diaPagamento}</p>
-            <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
-            <button onclick="pagarParcela(${c.id})">Pagar Parcela</button>
-            <button onclick="excluirCrediario(${c.id})">Excluir</button>
-          </div>
-        `;
+      <div style="border: 1px solid #444; border-radius: 8px; padding: 10px; margin: 10px 0; background: #222">
+        <p><strong>Nome:</strong> ${c.nome}</p>
+        <p><strong>CPF:</strong> ${c.cpf}</p>
+        <p><strong>Produtos:</strong> ${c.produtos}</p>
+        <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valor).toFixed(2)}</p>
+        <p><strong>Valor Parcela:</strong> R$ ${valorParcela}</p>
+        <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
+        <p><strong>Dia Pagamento:</strong> ${c.diaPagamento}</p>
+        <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
+        <button onclick="pagarParcela(${c.id})">Pagar Parcela</button>
+        <button onclick="excluirCrediario(${c.id})">Excluir</button>
+      </div>
+    `;
       });
     }
 
@@ -878,8 +929,8 @@
         return;
       }
 
-          abrirAba(abaId);
-        }
+      abrirAba(abaId);
+    }
 
     function abrirAba(abaId) {
       document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
@@ -924,30 +975,30 @@
     }
 
     function atualizarTabelaEstoque() {
-  const tabela = document.getElementById('tabelaEstoque');
-  tabela.innerHTML = '<tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>';
-  
-  let valorTotal = 0;
+      const tabela = document.getElementById('tabelaEstoque');
+      tabela.innerHTML = '<tr><th>Produto</th><th>Quantidade</th><th>Preço (R$)</th><th>Ações</th></tr>';
 
-  estoque.forEach((p, i) => {
-    const valorProduto = p.quantidade * p.preco;
-    valorTotal += valorProduto;
+      let valorTotal = 0;
 
-    tabela.innerHTML += `
-      <tr>
-        <td>${p.nome}</td>
-        <td>${p.quantidade}</td>
-        <td>${p.preco.toFixed(2)}</td>
-        <td>
-          <button onclick="editarProduto(${i})">Editar</button>
-          <button onclick="excluirProduto(${i})">Excluir</button>
-        </td>
-      </tr>`;
-  });
+      estoque.forEach((p, i) => {
+        const valorProduto = p.quantidade * p.preco;
+        valorTotal += valorProduto;
 
-  // Atualiza o valor total no parágrafo abaixo da tabela
-  document.getElementById('valorTotalEstoque').innerText = `Valor Total em Estoque: R$ ${valorTotal.toFixed(2)}`;
-}
+        tabela.innerHTML += `
+  <tr>
+    <td>${p.nome}</td>
+    <td>${p.quantidade}</td>
+    <td>${p.preco.toFixed(2)}</td>
+    <td>
+      <button onclick="editarProduto(${i})">Editar</button>
+      <button onclick="excluirProduto(${i})">Excluir</button>
+    </td>
+  </tr>`;
+      });
+
+      // Atualiza o valor total no parágrafo abaixo da tabela
+      document.getElementById('valorTotalEstoque').innerText = `Valor Total em Estoque: R$ ${valorTotal.toFixed(2)}`;
+    }
 
     function atualizarSelectProdutos() {
       const select = document.getElementById('produtoVenda');
@@ -959,116 +1010,119 @@
     }
 
     function registrarVenda() {
-    
-  const index = document.getElementById('produtoVenda').value;
-  const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
-  const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
-  const formaPagamento = document.getElementById('formaPagamento').value;
-  const cliente = document.getElementById('clienteVenda').value.trim() || "Cliente Não Informado";
 
-  if (index === '' || isNaN(quantidade) || formaPagamento === '') {
-    return alert('Preencha corretamente todos os campos.');
-  }
+      const index = document.getElementById('produtoVenda').value;
+      const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
+      const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
+      const formaPagamento = document.getElementById('formaPagamento').value;
+      const cliente = document.getElementById('clienteVenda').value.trim() || "Cliente Não Informado";
 
-  const produto = estoque[index];
-  if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+      if (index === '' || isNaN(quantidade) || formaPagamento === '') {
+        return alert('Preencha corretamente todos os campos.');
+      }
 
-  produto.quantidade -= quantidade;
+      const produto = estoque[index];
+      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
 
-  const hoje = new Date();
-  const data = hoje.toISOString().split('T')[0];
-  const hora = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      produto.quantidade -= quantidade;
 
-  vendas.push({
-    nome: produto.nome,
-    quantidade,
-    preco: produto.preco,
-    desconto,
-    precoComDesconto: produto.preco - (produto.preco * desconto / 100),
-    formaPagamento,
-    data,
-    hora,
-    cliente
-  });
+      const hoje = new Date();
+      const data = hoje.toISOString().split('T')[0];
+      const hora = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-  salvarDados();
-  alert('Venda registrada com sucesso!');
-  atualizarSelectProdutos();
-  atualizarHistorico();
-}
+      vendas.push({
+        nome: produto.nome,
+        quantidade,
+        preco: produto.preco,
+        desconto,
+        precoComDesconto: produto.preco - (produto.preco * desconto / 100),
+        formaPagamento,
+        data,
+        hora,
+        cliente
+      });
+
+      salvarDados();
+      alert('Venda registrada com sucesso!');
+      atualizarSelectProdutos();
+      atualizarHistorico();
+    }
 
     function atualizarHistorico() {
-  const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+      const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
 
-  const tabela = document.getElementById('tabelaVendas');
-  const totalSpan = document.getElementById('totalVendido');
-  const totalPorFormaSpan = document.getElementById('totaisPorForma');
+      const tabela = document.getElementById('tabelaVendas');
+      const totalSpan = document.getElementById('totalVendido');
+      const totalPorFormaSpan = document.getElementById('totaisPorForma');
 
-  tabela.innerHTML = `
-    <tr>
-      <th>Data</th>
-      <th>Produto</th>
-      <th>Qtd</th>
-      <th>Preço (R$)</th>
-      <th>Desconto (%)</th>
-      <th>Com Desconto (R$)</th>
-      <th>Total</th>
-      <th>Forma de Pagamento</th>
-      <th>Ações</th>
-    </tr>
-  `;
+      tabela.innerHTML = `
+<tr>
+  <th>Data</th>
+  <th>Produto</th>
+  <th>Qtd</th>
+  <th>Preço (R$)</th>
+  <th>Desconto (%)</th>
+  <th>Com Desconto (R$)</th>
+  <th>Total</th>
+  <th>Forma de Pagamento</th>
+  <th>Ações</th>
+</tr>
+`;
 
-  let total = 0;
-  let totaisPorForma = {};
+      let total = 0;
+      let totaisPorForma = {};
 
-  vendas.forEach((v, i) => {
-    const precoComDesconto = v.precoComDesconto || v.preco;
-    const subtotal = v.quantidade * precoComDesconto;
-    total += subtotal;
+      vendas.forEach((v, i) => {
+        const precoComDesconto = v.precoComDesconto || v.preco;
+        const subtotal = v.quantidade * precoComDesconto;
+        total += subtotal;
 
-    const forma = v.formaPagamento || 'Não informado';
-    if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
-    totaisPorForma[forma] += subtotal;
+        const forma = v.formaPagamento || 'Não informado';
+        if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
+        totaisPorForma[forma] += subtotal;
 
-    tabela.innerHTML += `
-      <tr>
-        <td>${v.data} ${v.hora || ''}</td>
-        <td>${v.nome}</td>
-        <td>${v.quantidade}</td>
-        <td>${v.preco.toFixed(2)}</td>
-        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
-        <td>${precoComDesconto.toFixed(2)}</td>
-        <td>${subtotal.toFixed(2)}</td>
-        <td>
-          <select onchange="editarFormaPagamento(${i}, this.value)">
-            <option value="">Selecionar</option>
-            <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
-            <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
-            <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
-            <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
-            <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
-          </select>
-        </td>
-        <td>
-          <button onclick="removerVenda(${i})">Remover</button><br>
-          <button onclick="gerarComprovanteDaVenda(${i})">Comprovante</button>
-        </td>
-      </tr>
-    `;
-  });
+        tabela.innerHTML += `
+  <tr>
+<td>
+  <input type="date" value="${v.data}" onchange="editarDataVenda(${i}, this.value)">
+  <br><small>${v.hora || ''}</small>
+</td>
+    <td>${v.nome}</td>
+    <td>${v.quantidade}</td>
+    <td>${v.preco.toFixed(2)}</td>
+    <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+    <td>${precoComDesconto.toFixed(2)}</td>
+    <td>${subtotal.toFixed(2)}</td>
+    <td>
+      <select onchange="editarFormaPagamento(${i}, this.value)">
+        <option value="">Selecionar</option>
+        <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
+        <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
+        <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
+        <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
+        <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
+      </select>
+    </td>
+    <td>
+      <button onclick="removerVenda(${i})">Remover</button><br>
+      <button onclick="gerarComprovanteDaVenda(${i})">Comprovante</button>
+    </td>
+  </tr>
+`;
+      });
 
-  totalSpan.textContent = total.toFixed(2);
+      totalSpan.textContent = total.toFixed(2);
 
-  let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
-  for (let forma in totaisPorForma) {
-    htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
-  }
-  htmlTotais += '</ul>';
-  totalPorFormaSpan.innerHTML = htmlTotais;
+      let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
+      for (let forma in totaisPorForma) {
+        htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
+      }
+      htmlTotais += '</ul>';
+      totalPorFormaSpan.innerHTML = htmlTotais;
 
-  atualizarGrafico('semana');
-}
-    
+      atualizarGrafico('semana');
+    }
+
     function gerarComprovanteDaVenda(index) {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
       const venda = vendas[index];
@@ -1076,80 +1130,87 @@
     }
 
     function gerarComprovante(venda) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  const precoComDesconto = venda.precoComDesconto !== undefined ? venda.precoComDesconto : venda.preco;
-  const totalPago = venda.quantidade * precoComDesconto;
+      const precoComDesconto = venda.precoComDesconto !== undefined ? venda.precoComDesconto : venda.preco;
+      const totalPago = venda.quantidade * precoComDesconto;
 
-  // Configurações básicas
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  let y = 10;
+      // Configurações básicas
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      let y = 10;
 
-  // Cabeçalho
-  doc.setFontSize(14);
-  doc.setTextColor(123, 44, 191);
-  doc.text("USE STYLO", 105, y, { align: "center" });
-  y += 5;
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  doc.text("CNPJ: 00.000.000/0001-00", 105, y, { align: "center" });
-  y += 5;
-  doc.text("Endereço: Rua 7 de Setembro, 478 - Centro, São Pedro do Sul, Rio Grande do Sul, Brazil, 97400000", 105, y, { align: "center" });
-  y += 5;
-  doc.text("Telefone: (55) 99206-1704", 105, y, { align: "center" });
-  y += 10;
+      // Cabeçalho
+      doc.setFontSize(14);
+      doc.setTextColor(123, 44, 191);
+      doc.text("USE STYLO", 105, y, { align: "center" });
+      y += 5;
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text("CNPJ: 00.000.000/0001-00", 105, y, { align: "center" });
+      y += 5;
+      doc.text("Endereço: Rua 7 de Setembro, 478 - Centro, São Pedro do Sul, Rio Grande do Sul, Brazil, 97400000", 105, y, { align: "center" });
+      y += 5;
+      doc.text("Telefone: (55) 99206-1704", 105, y, { align: "center" });
+      y += 10;
 
-  // Linha divisória
-  doc.line(10, y, 200, y);
-  y += 5;
+      // Linha divisória
+      doc.line(10, y, 200, y);
+      y += 5;
 
-  // Informações da venda
-  doc.text(`Data da emissão: ${venda.data || 'N/A'}`, 10, y);
-  doc.text(`Hora da emissão: ${venda.hora || 'N/A'}`, 150, y);
-  y += 7;
-  if (venda.cliente) {
-    doc.text(`Nome Completo: ${venda.cliente}`, 10, y);
-    y += 7;
-  }
-  
-  doc.line(10, y, 200, y);
-  y += 5;
+      // Informações da venda
+      doc.text(`Data da emissão: ${venda.data || 'N/A'}`, 10, y);
+      doc.text(`Hora da emissão: ${venda.hora || 'N/A'}`, 150, y);
+      y += 7;
+      if (venda.cliente) {
+        doc.text(`Nome Completo: ${venda.cliente}`, 10, y);
+        y += 7;
+      }
 
-  // Produto
-  doc.text(`Produto: ${venda.nome || 'N/A'}`, 10, y);
-  y += 7;
-  doc.text(`Quantidade: ${venda.quantidade || '0'}`, 10, y);
-  y += 7;
-  doc.text(`Preço Unitário: R$ ${venda.preco?.toFixed(2) || '0.00'}`, 10, y);
-  y += 7;
-  doc.text(`Desconto: ${venda.desconto !== undefined ? venda.desconto + '%' : '0%'}`, 10, y);
-  y += 7;
-  doc.text(`Preço Final Unitário: R$ ${precoComDesconto.toFixed(2)}`, 10, y);
-  y += 7;
+      doc.line(10, y, 200, y);
+      y += 5;
 
-  doc.line(10, y, 200, y);
-  y += 5;
+      // Produto
+      doc.text(`Produto: ${venda.nome || 'N/A'}`, 10, y);
+      y += 7;
+      doc.text(`Quantidade: ${venda.quantidade || '0'}`, 10, y);
+      y += 7;
+      doc.text(`Preço Unitário: R$ ${venda.preco?.toFixed(2) || '0.00'}`, 10, y);
+      y += 7;
+      doc.text(`Desconto: ${venda.desconto !== undefined ? venda.desconto + '%' : '0%'}`, 10, y);
+      y += 7;
+      doc.text(`Preço Final Unitário: R$ ${precoComDesconto.toFixed(2)}`, 10, y);
+      y += 7;
 
-  // Pagamento
-  doc.text(`Forma de Pagamento: ${venda.formaPagamento || 'Não informado'}`, 10, y);
-  y += 7;
-  doc.text(`Total Pago: R$ ${totalPago.toFixed(2)}`, 10, y);
-  y += 10;
+      doc.line(10, y, 200, y);
+      y += 5;
 
-  // Agradecimento
-  doc.setFontSize(10);
-  doc.setTextColor(123, 44, 191);
-  doc.text("Obrigado pela preferência!", 105, y, { align: "center" });
-  y += 5;
-  doc.text("- Use o seu Stylo -", 105, y, { align: "center" });
+      // Pagamento
+      doc.text(`Forma de Pagamento: ${venda.formaPagamento || 'Não informado'}`, 10, y);
+      y += 7;
+      doc.text(`Total Pago: R$ ${totalPago.toFixed(2)}`, 10, y);
+      y += 10;
 
-  // Salvar PDF
-  doc.save(`Comprovante_${venda.nome || 'Venda'}_${venda.data || 'data'}.pdf`);
-}
+      // Agradecimento
+      doc.setFontSize(10);
+      doc.setTextColor(123, 44, 191);
+      doc.text("Obrigado pela preferência!", 105, y, { align: "center" });
+      y += 5;
+      doc.text("- Use o seu Stylo -", 105, y, { align: "center" });
+
+      // Salvar PDF
+      doc.save(`Comprovante_${venda.nome || 'Venda'}_${venda.data || 'data'}.pdf`);
+    }
+
     function editarFormaPagamento(index, novaForma) {
       vendas[index].formaPagamento = novaForma;
+      salvarDados();
+      atualizarHistorico();
+    }
+
+    function editarDataVenda(index, novaData) {
+      vendas[index].data = novaData;
       salvarDados();
       atualizarHistorico();
     }
@@ -1160,75 +1221,75 @@
         salvarDados();
         atualizarHistorico();
       }
-      }
+    }
 
     function filtrarVendas() {
-  const dataFiltro = document.getElementById('filtroData').value;
-  const tabela = document.getElementById('tabelaVendas');
-  const totalSpan = document.getElementById('totalVendido');
-  const totalPorFormaSpan = document.getElementById('totaisPorForma');
+      const dataFiltro = document.getElementById('filtroData').value;
+      const tabela = document.getElementById('tabelaVendas');
+      const totalSpan = document.getElementById('totalVendido');
+      const totalPorFormaSpan = document.getElementById('totaisPorForma');
 
-  tabela.innerHTML = `
-    <tr>
-      <th>Data</th>
-      <th>Produto</th>
-      <th>Qtd</th>
-      <th>Preço (R$)</th>
-      <th>Desconto (%)</th>
-      <th>Com Desconto (R$)</th>
-      <th>Total</th>
-      <th>Forma de Pagamento</th>
-      <th>Ações</th>
-    </tr>
-  `;
+      tabela.innerHTML = `
+<tr>
+  <th>Data</th>
+  <th>Produto</th>
+  <th>Qtd</th>
+  <th>Preço (R$)</th>
+  <th>Desconto (%)</th>
+  <th>Com Desconto (R$)</th>
+  <th>Total</th>
+  <th>Forma de Pagamento</th>
+  <th>Ações</th>
+</tr>
+`;
 
-  let total = 0;
-  let totaisPorForma = {};
+      let total = 0;
+      let totaisPorForma = {};
 
-  vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach((v, i) => {
-    const precoComDesconto = v.precoComDesconto || v.preco;
-    const subtotal = v.quantidade * precoComDesconto;
-    total += subtotal;
+      vendas.filter(v => !dataFiltro || v.data === dataFiltro).forEach((v, i) => {
+        const precoComDesconto = v.precoComDesconto || v.preco;
+        const subtotal = v.quantidade * precoComDesconto;
+        total += subtotal;
 
-    // Acumular valor conforme forma de pagamento
-    const forma = v.formaPagamento || 'Não informado';
-    if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
-    totaisPorForma[forma] += subtotal;
+        // Acumular valor conforme forma de pagamento
+        const forma = v.formaPagamento || 'Não informado';
+        if (!totaisPorForma[forma]) totaisPorForma[forma] = 0;
+        totaisPorForma[forma] += subtotal;
 
-    tabela.innerHTML += `
-      <tr>
-        <td>${v.data}</td>
-        <td>${v.nome}</td>
-        <td>${v.quantidade}</td>
-        <td>${v.preco.toFixed(2)}</td>
-        <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
-        <td>${precoComDesconto.toFixed(2)}</td>
-        <td>${subtotal.toFixed(2)}</td>
-        <td>
-          <select onchange="editarFormaPagamento(${i}, this.value)">
-            <option value="">Selecionar</option>
-            <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
-            <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
-            <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
-            <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
-            <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
-          </select>
-        </td>
-        <td><button onclick="removerVenda(${i})">Remover</button></td>
-      </tr>
-    `;
-  });
+        tabela.innerHTML += `
+  <tr>
+    <td>${v.data}</td>
+    <td>${v.nome}</td>
+    <td>${v.quantidade}</td>
+    <td>${v.preco.toFixed(2)}</td>
+    <td>${v.desconto ? v.desconto + '%' : '0%'}</td>
+    <td>${precoComDesconto.toFixed(2)}</td>
+    <td>${subtotal.toFixed(2)}</td>
+    <td>
+      <select onchange="editarFormaPagamento(${i}, this.value)">
+        <option value="">Selecionar</option>
+        <option value="Dinheiro" ${v.formaPagamento === 'Dinheiro' ? 'selected' : ''}>Dinheiro</option>
+        <option value="Pix" ${v.formaPagamento === 'Pix' ? 'selected' : ''}>Pix</option>
+        <option value="Cartao-Debito" ${v.formaPagamento === 'Cartao-Debito' ? 'selected' : ''}>Cartão Débito</option>
+        <option value="Cartao-Credito" ${v.formaPagamento === 'Cartao-Credito' ? 'selected' : ''}>Cartão Crédito</option>
+        <option value="Crediario" ${v.formaPagamento === 'Crediario' ? 'selected' : ''}>Crediário</option>
+      </select>
+    </td>
+    <td><button onclick="removerVenda(${i})">Remover</button></td>
+  </tr>
+`;
+      });
 
-  totalSpan.textContent = total.toFixed(2);
+      totalSpan.textContent = total.toFixed(2);
 
-  // Exibir os totais por forma de pagamento
-  let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
-  for (let forma in totaisPorForma) {
-    htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
-  }
+      // Exibir os totais por forma de pagamento
+      let htmlTotais = '<h3>Total por Forma de Pagamento:</h3><ul>';
+      for (let forma in totaisPorForma) {
+        htmlTotais += `<li>${forma}: R$ ${totaisPorForma[forma].toFixed(2)}</li>`;
+      }
 
-  totalPorFormaSpan.innerHTML = htmlTotais;
-}
+      totalPorFormaSpan.innerHTML = htmlTotais;
+    }
 
     function removerFiltro() {
       document.getElementById('filtroData').value = '';  // Limpa o campo de data
@@ -1236,7 +1297,7 @@
     }
 
     function gerarRelatorioMensal() {
-      const mesAtual = new Date().toISOString().slice(0,7);
+      const mesAtual = new Date().toISOString().slice(0, 7);
       document.getElementById('filtroData').value = '';
       const tabela = document.getElementById('tabelaVendas');
       tabela.innerHTML = '<tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Preço (R$)</th><th>Total</th></tr>';
@@ -1250,122 +1311,122 @@
     }
 
     function exportarBackup() {
-  const dados = {
-    estoque: estoque,
-    vendas: vendas,
-  };
+      const dados = {
+        estoque: estoque,
+        vendas: vendas,
+      };
 
-  const dadosJSON = JSON.stringify(dados);  // Convertendo os dados para JSON
-  const blob = new Blob([dadosJSON], { type: 'application/json' });  // Criando o arquivo JSON
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'backup_vendas.json';  // Nome do arquivo de backup
-  a.click();
-}
+      const dadosJSON = JSON.stringify(dados);  // Convertendo os dados para JSON
+      const blob = new Blob([dadosJSON], { type: 'application/json' });  // Criando o arquivo JSON
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'backup_vendas.json';  // Nome do arquivo de backup
+      a.click();
+    }
 
     function importarBackup() {
       document.getElementById('arquivoBackup').click();
     }
 
     function carregarBackup(event) {
-  const file = event.target.files[0];  // Pegando o arquivo selecionado
-  if (!file) return;
+      const file = event.target.files[0];  // Pegando o arquivo selecionado
+      if (!file) return;
 
-  const reader = new FileReader();  // Criando um objeto para ler o arquivo
-  reader.onload = function(e) {
-    try {
-      const conteudo = JSON.parse(e.target.result);  // Parseando o conteúdo do arquivo JSON
+      const reader = new FileReader();  // Criando um objeto para ler o arquivo
+      reader.onload = function (e) {
+        try {
+          const conteudo = JSON.parse(e.target.result);  // Parseando o conteúdo do arquivo JSON
 
-      // Garantir que os dados sejam restaurados
-      estoque = conteudo.estoque || [];
-      vendas = conteudo.vendas || [];
+          // Garantir que os dados sejam restaurados
+          estoque = conteudo.estoque || [];
+          vendas = conteudo.vendas || [];
 
-      salvarDados();  // Função para salvar os dados restaurados
-      alert('Backup importado com sucesso!');
-      mostrarAba('estoque');  // Mostrando a aba de estoque após o import
-    } catch (error) {
-      alert('Erro ao carregar o backup. Certifique-se de que o arquivo está correto.');
+          salvarDados();  // Função para salvar os dados restaurados
+          alert('Backup importado com sucesso!');
+          mostrarAba('estoque');  // Mostrando a aba de estoque após o import
+        } catch (error) {
+          alert('Erro ao carregar o backup. Certifique-se de que o arquivo está correto.');
+        }
+      };
+
+      reader.readAsText(file);  // Lendo o conteúdo do arquivo como texto
     }
-  };
-
-  reader.readAsText(file);  // Lendo o conteúdo do arquivo como texto
-}
 
     function atualizarGrafico(tipo) {
-  // Recarrega os dados de vendas do localStorage
-  const vendas = JSON.parse(localStorage.getItem('vendas')) || []; // Garantir que estamos usando os dados mais recentes
+      // Recarrega os dados de vendas do localStorage
+      const vendas = JSON.parse(localStorage.getItem('vendas')) || []; // Garantir que estamos usando os dados mais recentes
 
-  const ctx = document.getElementById('graficoVendas').getContext('2d');
-  let labels = [];
-  let dados = [];
+      const ctx = document.getElementById('graficoVendas').getContext('2d');
+      let labels = [];
+      let dados = [];
 
-  // Reset dados
-  let mapa = {};
+      // Reset dados
+      let mapa = {};
 
-  vendas.forEach(v => {
-    const data = new Date(v.data);  // Garantimos que estamos lidando com um objeto Date corretamente
-    let chave;
+      vendas.forEach(v => {
+        const data = new Date(v.data);  // Garantimos que estamos lidando com um objeto Date corretamente
+        let chave;
 
-    // Calcular o valor da venda com desconto, se disponível
-    const precoComDesconto = v.precoComDesconto || v.preco;  // Considera o desconto se estiver presente
-    const subtotal = v.quantidade * precoComDesconto;  // Calcular o total considerando o desconto
+        // Calcular o valor da venda com desconto, se disponível
+        const precoComDesconto = v.precoComDesconto || v.preco;  // Considera o desconto se estiver presente
+        const subtotal = v.quantidade * precoComDesconto;  // Calcular o total considerando o desconto
 
-    if (tipo === 'semana') {
-      chave = data.toISOString().split('T')[0]; // Garantir que usamos o formato ISO para a data
-    } else if (tipo === 'mes') {
-      chave = data.toISOString().slice(0, 7);  // Ano e mês, por exemplo: '2025-04'
-    } else if (tipo === 'ano') {
-      chave = data.getFullYear();  // Apenas o ano
-    }
-
-    if (!mapa[chave]) mapa[chave] = 0;
-    mapa[chave] += subtotal;  // Usa o valor com desconto
-
-  });
-
-  labels = Object.keys(mapa);
-  dados = Object.values(mapa);
-
-  // Ordena as chaves cronologicamente se for mês ou ano
-  if (tipo === 'mes') {
-    labels.sort((a, b) => parseInt(a) - parseInt(b));
-    dados = labels.map(dia => mapa[dia]);
-  } else if (tipo === 'ano') {
-    const ordemMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-    labels.sort((a, b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
-    dados = labels.map(mes => mapa[mes]);
-  }
-
-  // Destroi gráfico anterior se já existir
-  if (window.graficoVendasObj) {
-    window.graficoVendasObj.destroy();
-  }
-
-  // Cria o novo gráfico
-  window.graficoVendasObj = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Total Vendido (R$)',
-        data: dados,
-        backgroundColor: 'rgba(162, 0, 255, 1)',
-        borderColor: 'rgba(155, 89, 182, 1)',
-        borderWidth: 1,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true
+        if (tipo === 'semana') {
+          chave = data.toISOString().split('T')[0]; // Garantir que usamos o formato ISO para a data
+        } else if (tipo === 'mes') {
+          chave = data.toISOString().slice(0, 7);  // Ano e mês, por exemplo: '2025-04'
+        } else if (tipo === 'ano') {
+          chave = data.getFullYear();  // Apenas o ano
         }
+
+        if (!mapa[chave]) mapa[chave] = 0;
+        mapa[chave] += subtotal;  // Usa o valor com desconto
+
+      });
+
+      labels = Object.keys(mapa);
+      dados = Object.values(mapa);
+
+      // Ordena as chaves cronologicamente se for mês ou ano
+      if (tipo === 'mes') {
+        labels.sort((a, b) => parseInt(a) - parseInt(b));
+        dados = labels.map(dia => mapa[dia]);
+      } else if (tipo === 'ano') {
+        const ordemMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+        labels.sort((a, b) => ordemMeses.indexOf(a) - ordemMeses.indexOf(b));
+        dados = labels.map(mes => mapa[mes]);
       }
+
+      // Destroi gráfico anterior se já existir
+      if (window.graficoVendasObj) {
+        window.graficoVendasObj.destroy();
+      }
+
+      // Cria o novo gráfico
+      window.graficoVendasObj = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Vendido (R$)',
+            data: dados,
+            backgroundColor: 'rgba(162, 0, 255, 1)',
+            borderColor: 'rgba(155, 89, 182, 1)',
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
     }
-  });
-}
     mostrarAba('estoque');
 
     function relatorioPorCategoria() {
@@ -1384,7 +1445,7 @@
     }
 
     function relatorioPorDiaSemana() {
-      const dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+      const dias = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
       const totais = Array(7).fill(0);
       vendas.forEach(v => {
         const dia = new Date(v.data).getDay();
@@ -1406,6 +1467,7 @@
 
 
   </script>
-<!--? FIM SCRIPT -->
+  <!--? FIM SCRIPT -->
 </body>
+
 </html>
