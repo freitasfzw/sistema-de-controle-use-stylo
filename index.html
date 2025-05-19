@@ -449,32 +449,36 @@
       </select>
     </div>
 
-    <button onclick="registrarVenda()">Registrar</button>
+<button onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+
+    <h2 style="justify-content: center; align-items: center; text-align: center;">Carrinho</h2>
+    <div id="carrinhoContainer"></div>
+    <br>
+
+    <button onclick="finalizarVenda()">Finalizar Venda</button>
 
     <div class="main-container">
       <h1>Calculadora de Troco</h1>
     </div>
+      <div id="calculadora" class="container">
+        <div class="header">
+        </div>
+        <br>
 
-    <div id="calculadora" class="container">
-      <div class="header">
+        <div class="input-group">
+          <label>Valor da compra</label>
+          <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
+        </div>
+
+        <div class="input-group">
+          <label>Valor pago</label>
+          <input type="number" id="valorPago" placeholder="Ex: 50.00" />
+        </div>
+
+        <button onclick="calcularTroco()">Calcular Troco</button>
+
+        <div id="resultado" class="resultado"></div>
       </div>
-      <br>
-
-      <div class="input-group">
-        <label>Valor da compra</label>
-        <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
-      </div>
-
-      <div class="input-group">
-        <label>Valor pago</label>
-        <input type="number" id="valorPago" placeholder="Ex: 50.00" />
-      </div>
-
-      <button onclick="calcularTroco()">Calcular Troco</button>
-
-      <div id="resultado" class="resultado"></div>
-    </div>
-
 
   </section>
   <!--! FIM MENU VENDAS -->
@@ -737,6 +741,7 @@
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
     let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
     let crediario = JSON.parse(localStorage.getItem('crediarios')) || [];
+    let carrinho = [];
 
     document.addEventListener('DOMContentLoaded', montarCrediario);
 
@@ -1009,45 +1014,37 @@
       });
     }
 
-    function registrarVenda() {
-
+    function adicionarAoCarrinho() {
       const index = document.getElementById('produtoVenda').value;
       const quantidade = parseInt(document.getElementById('quantidadeVenda').value);
       const desconto = parseFloat(document.getElementById('descontoVenda').value) || 0;
-      const formaPagamento = document.getElementById('formaPagamento').value;
       const cliente = document.getElementById('clienteVenda').value.trim() || "Cliente Não Informado";
 
-      if (index === '' || isNaN(quantidade) || formaPagamento === '') {
+      if (index === '' || isNaN(quantidade)) {
         return alert('Preencha corretamente todos os campos.');
       }
 
       const produto = estoque[index];
-      if (quantidade > produto.quantidade) return alert('Quantidade insuficiente no estoque.');
+      if (quantidade > produto.quantidade) {
+        return alert('Quantidade insuficiente no estoque.');
+      }
 
-      produto.quantidade -= quantidade;
+      const precoComDesconto = produto.preco - (produto.preco * desconto / 100);
+      const subtotal = precoComDesconto * quantidade;
 
-      const hoje = new Date();
-      const data = hoje.toISOString().split('T')[0];
-      const hora = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      vendas.push({
+      carrinho.push({
+        idProduto: index,
         nome: produto.nome,
         quantidade,
         preco: produto.preco,
         desconto,
-        precoComDesconto: produto.preco - (produto.preco * desconto / 100),
-        formaPagamento,
-        data,
-        hora,
+        precoComDesconto,
+        subtotal,
         cliente
       });
 
-      salvarDados();
-      alert('Venda registrada com sucesso!');
-      atualizarSelectProdutos();
-      atualizarHistorico();
+      atualizarCarrinhoUI();
     }
-
     function atualizarHistorico() {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
 
@@ -1122,6 +1119,67 @@
 
       atualizarGrafico('semana');
     }
+    function atualizarCarrinhoUI() {
+  const container = document.getElementById('carrinhoContainer');
+  container.innerHTML = '';
+  let total = 0;
+
+  carrinho.forEach((item, index) => {
+    total += item.subtotal;
+
+    container.innerHTML += `
+      <div>
+        ${item.nome} - ${item.quantidade}x R$${item.preco.toFixed(2)} 
+        (${item.desconto}% desc) = R$${item.subtotal.toFixed(2)}
+        <button onclick="removerDoCarrinho(${index})">Remover</button>
+      </div>
+    `;
+  });
+
+  container.innerHTML += `<strong>Total: R$${total.toFixed(2)}</strong>`;
+}
+    function removerDoCarrinho(index) {
+      carrinho.splice(index, 1);
+      atualizarCarrinhoUI();
+    }
+    function finalizarVenda() {
+      if (carrinho.length === 0) {
+        return alert("Carrinho está vazio.");
+      }
+
+      const formaPagamento = document.getElementById('formaPagamento').value;
+      if (!formaPagamento) {
+        return alert("Selecione a forma de pagamento.");
+      }
+
+      const hoje = new Date();
+      const data = hoje.toISOString().split('T')[0];
+      const hora = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      carrinho.forEach(item => {
+        estoque[item.idProduto].quantidade -= item.quantidade;
+
+        vendas.push({
+          nome: item.nome,
+          quantidade: item.quantidade,
+          preco: item.preco,
+          desconto: item.desconto,
+          precoComDesconto: item.precoComDesconto,
+          formaPagamento,
+          data,
+          hora,
+          cliente: item.cliente
+        });
+      });
+
+      salvarDados();
+      atualizarHistorico();
+      carrinho = [];
+      atualizarCarrinhoUI();
+      alert("Venda finalizada com sucesso!");
+      atualizarSelectProdutos();
+    }
+
 
     function gerarComprovanteDaVenda(index) {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
@@ -1464,7 +1522,6 @@
       const ticketMedio = totalVendido / vendas.length;
       alert(`Média de Vendas: R$ ${ticketMedio.toFixed(2)}`);
     }
-
 
   </script>
   <!--? FIM SCRIPT -->
