@@ -46,7 +46,7 @@
       border-radius: 8px;
       cursor: pointer;
       background: var(--cinza);
-      color: var(--branco);
+      color: var(--principal);
       border: 1px solid var(--borda);
     }
 
@@ -103,7 +103,7 @@
 
     button {
       background: var(--preto);
-      color: var(--branco);
+      color: var(--principal);
       border: none;
       border-radius: 5px;
       font-size: 1rem;
@@ -314,7 +314,8 @@
       const dados = {
         estoque,
         vendas,
-        crediarios: JSON.parse(localStorage.getItem('crediarios')) || [],  // Pega os crediários do localStorage
+        crediarios: JSON.parse(localStorage.getItem('crediarios')) || [],
+        historicoCrediariosPagos: JSON.parse(localStorage.getItem('historicoCrediariosPagos')) || [],
         ultimaAtualizacao: new Date().toLocaleString('pt-BR')
       };
 
@@ -325,42 +326,41 @@
         })
         .catch((erro) => console.error("Erro ao salvar no Firebase:", erro));
     };
-
-    // Importar do Firebase (estoque, vendas e crediários)
+ 
     window.importarDoFirebase = () => {
-      window.get(window.child(window.ref(window.db), 'backup'))
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            const dados = snapshot.val();
-            console.log(dados);
+  window.get(window.child(window.ref(window.db), 'backup'))
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        const dados = snapshot.val();
 
-            if (dados) {
-              estoque = dados.estoque || [];
-              vendas = dados.vendas || [];
-              crediarios = dados.crediarios || [];
-              localStorage.setItem('crediarios', JSON.stringify(crediarios));
-              salvarDados?.();
-              atualizarSelectProdutos?.();
-              atualizarHistorico?.();
-              carregarCrediarios();
-              if (dados.ultimaAtualizacao) {
-                document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
-              }
+        estoque = dados.estoque || [];
+        vendas = dados.vendas || [];
+        crediarios = dados.crediarios || [];
+        const historico = dados.historicoCrediariosPagos || [];
 
-              alert("Backup importado da nuvem com sucesso!");
-            } else {
-              alert("Não há dados no backup.");
-            }
-          } else {
-            alert("Nenhum backup encontrado na nuvem.");
-          }
-        })
-        .catch((erro) => {
-          console.error("Erro ao importar do Firebase:", erro);
-          alert("Houve um erro ao tentar importar os dados.");
-        });
+        localStorage.setItem('crediarios', JSON.stringify(crediarios));
+        localStorage.setItem('historicoCrediariosPagos', JSON.stringify(historico));
 
-    };
+        salvarDados?.();
+        atualizarSelectProdutos?.();
+        atualizarHistorico?.();
+        carregarCrediarios();
+        carregarHistorico?.();
+
+        if (dados.ultimaAtualizacao) {
+          document.getElementById('ultimaDataBackup').textContent = `Último backup: ${dados.ultimaAtualizacao}`;
+        }
+
+        alert("Backup importado da nuvem com sucesso!");
+      } else {
+        alert("Nenhum backup encontrado na nuvem.");
+      }
+    })
+    .catch((erro) => {
+      console.error("Erro ao importar do Firebase:", erro);
+      alert("Houve um erro ao tentar importar os dados.");
+    });
+};
 
     // Mostrar data do último backup ao carregar
     window.addEventListener('DOMContentLoaded', () => {
@@ -410,7 +410,7 @@
     <button onclick="mostrarAba('crediario')">Crediario</button>
     <button onclick="mostrarAba('nuvem')">Nuvem de Dados</button>
     <button onclick="mostrarAba('historico')">Painel de Controle</button>
-    <button><a style="color: var(--branco); text-decoration: none;" href="#atualizaçoes">Atualizações</a></button>
+    <button><a style="color: var(--principal); text-decoration: none;" href="#atualizaçoes">Atualizações</a></button>
   </nav>
   <!--! FIM MENU -->
 
@@ -513,13 +513,13 @@
   <section id="nuvem">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Nuvem de Dados</h2>
 
-    <h3 style="color: var(--principal); font-size: 15px;">Toda ação é irreversivel pois não existe backup no banco de
+    <h3 style="color: var(--branco); font-size: 15px;">Toda ação é irreversivel pois não existe backup no banco de
       dados!</h3>
     <button onclick="exportarParaFirebase()">Salvar Dados na Nuvem</button>
     <br><br>
 
     <button onclick="importarDoFirebase()">Carregar Dados Salvos da Nuvem</button>
-    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--principal);"></p>
+    <p id="ultimaDataBackup" style="font-weight: bold; color: var(--branco);"></p>
 
   </section>
   <!--! FIM MENU NUVEM -->
@@ -785,7 +785,7 @@
             Pagar Parcela
           </button>
           <button onclick="removerCrediario(${i})">Remover Crediario</button>
-          <button onclick="abrirWhatsApp('${c.numCliente}')">Chamar no WhatsApp</button>
+          <button onclick="abrirWhatsApp('${c.numCliente}')">Alertar Vencimento no WhatsApp</button>
         </div>
       `;
       });
