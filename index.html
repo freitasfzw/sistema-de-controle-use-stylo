@@ -267,7 +267,6 @@
     }
   </style>
 
-
   <!--P ICONE DA PAGINA -->
   <link rel="icon" href="use-styloo-ico.ico" type="image/x-icon">
   <!--P FIM ICONE DA PAGINA -->
@@ -415,6 +414,32 @@
   </nav>
   <!--! FIM MENU -->
 
+  <section id="crediario">
+    <h2 style="justify-content: center; align-items: center; text-align: center">Crediário</h2>
+
+    <div id="formCrediario" style="margin: 20px 0;">
+      <input type="text" id="nomeCliente" placeholder="Nome do Cliente" />
+      <input type="text" id="cpfCliente" placeholder="CPF" />
+      <input type="text" id="numCliente" placeholder="Telefone do Cliente (EX: +5555999999999)">
+      <input type="text" id="produtosComprados" placeholder="Produtos Comprados" />
+      <input type="text" id="valorCompra" placeholder="Valor da Compra" />
+      <input type="date" id="dataCompra" />
+      <input type="number" id="diaPagamento" placeholder="Dia do Mês para Pagamento" min="1" max="31" />
+      <input type="number" id="parcelasTotais" placeholder="Número de Parcelas" min="1" />
+      <button id="btnSalvarCrediario">Salvar Crediário</button>
+    </div>
+
+    <div id="listaCrediarios">
+      <h3>Clientes no Crediário</h3>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div id="listaHistoricoCrediarios">
+      <h2 style="justify-content: center; align-items: center; text-align: center"> Histórico de Crediários</h2>
+    </div>
+  </section>
+
   <!--! MENU ESTOQUE -->
   <section id="estoque">
     <h2 style="justify-content: center; align-items: center; text-align: center;">Cadastro de Produto</h2>
@@ -449,7 +474,7 @@
       </select>
     </div>
 
-<button onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+    <button onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
 
     <h2 style="justify-content: center; align-items: center; text-align: center;">Carrinho</h2>
     <div id="carrinhoContainer"></div>
@@ -460,36 +485,29 @@
     <div class="main-container">
       <h1>Calculadora de Troco</h1>
     </div>
-      <div id="calculadora" class="container">
-        <div class="header">
-        </div>
-        <br>
-
-        <div class="input-group">
-          <label>Valor da compra</label>
-          <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
-        </div>
-
-        <div class="input-group">
-          <label>Valor pago</label>
-          <input type="number" id="valorPago" placeholder="Ex: 50.00" />
-        </div>
-
-        <button onclick="calcularTroco()">Calcular Troco</button>
-
-        <div id="resultado" class="resultado"></div>
+    <div id="calculadora" class="container">
+      <div class="header">
       </div>
+      <br>
+
+      <div class="input-group">
+        <label>Valor da compra</label>
+        <input type="number" id="valorCompra" placeholder="Ex: 23.50" />
+      </div>
+
+      <div class="input-group">
+        <label>Valor pago</label>
+        <input type="number" id="valorPago" placeholder="Ex: 50.00" />
+      </div>
+
+      <button onclick="calcularTroco()">Calcular Troco</button>
+
+      <div id="resultado" class="resultado"></div>
+    </div>
 
   </section>
   <!--! FIM MENU VENDAS -->
 
-  <!--! MENU CREDIARIO -->
-  <section id="crediario">
-    <h2 style="justify-content: center; align-items: center; text-align: center">Crediarios</h2>
-
-
-  </section>
-  <!--! FIM MENU CREDIARIO -->
 
   <!--! MENU NUVEM -->
   <section id="nuvem">
@@ -738,12 +756,179 @@
     window.get
     window.child
 
+
     let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
     let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
-    let crediario = JSON.parse(localStorage.getItem('crediarios')) || [];
     let carrinho = [];
 
-    document.addEventListener('DOMContentLoaded', montarCrediario);
+
+    function carregarCrediarios() {
+      const listaDiv = document.getElementById('listaCrediarios');
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+
+      listaDiv.innerHTML = '<h2 style="justify-content: center; align-items: center; text-align: center">Clientes no Crediário</h2>';
+
+      crediarios.forEach((c, i) => {
+        const valorParcela = (parseFloat(c.valorCompra) / c.parcelasTotais).toFixed(2);
+        listaDiv.innerHTML += `
+        <div style="border:1px solid #ccc; margin:10px 0; padding:10px;">
+          <p><strong>Nome:</strong> ${c.nomeCliente}</p>
+          <p><strong>CPF:</strong> ${c.cpfCliente}</p>
+          <p><strong>Telefone:</strong> ${c.numCliente}</p>
+          <p><strong>Produtos:</strong> ${c.produtosComprados}</p>
+          <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valorCompra).toFixed(2)}</p>
+          <p><strong>Valor Parcela:</strong> R$ ${valorParcela}</p>
+          <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
+          <p><strong>Dia Pagamento:</strong> ${c.diaPagamento}</p>
+          <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
+          <button onclick="pagarParcela(${i})" ${c.parcelasPagas >= c.parcelasTotais ? 'disabled' : ''}>
+            Pagar Parcela
+          </button>
+          <button onclick="removerCrediario(${i})">Remover Crediario</button>
+          <button onclick="abrirWhatsApp('${c.numCliente}')">Chamar no WhatsApp</button>
+        </div>
+      `;
+      });
+
+      carregarHistorico();
+    }
+
+    function abrirWhatsApp(numero) {
+      const numeroLimpo = numero.replace(/\D/g, '');
+
+      let numeroFinal = numeroLimpo;
+      if (!numeroLimpo.startsWith('55')) {
+        numeroFinal = '55' + numeroLimpo;
+      }
+
+      const url = `https://wa.me/${numeroFinal}?text=Oi!%20Tudo%20bem%3F%0AAqui%20%C3%A9%20da%20Use%20Stylo.%20Estamos%20passando%20para%20lembrar%20que%20a%20pr%C3%B3xima%20parcela%20do%20seu%20credi%C3%A1rio%20est%C3%A1%20chegando.%0A%0ASe%20precisar%20de%20qualquer%20informa%C3%A7%C3%A3o%20sobre%20o%20seu%20credi%C3%A1rio%2C%20%C3%A9%20s%C3%B3%20chamar.%20Estamos%20aqui%20para%20ajudar!%0A%0AAgradecemos%20pela%20confian%C3%A7a.%0AAtenciosamente%2C%0AUse%20Stylo%0A%0A(Mensagem%20automatizada)`;
+      window.open(url, '_blank');
+    }
+
+    function adicionarCrediario() {
+      const nomeCliente = document.getElementById('nomeCliente').value.trim();
+      const cpfCliente = document.getElementById('cpfCliente').value.trim();
+      const numCliente = document.getElementById('numCliente').value.trim();
+      const produtosComprados = document.getElementById('produtosComprados').value.trim();
+      const valorCompraRaw = document.getElementById('valorCompra').value.trim().replace(',', '.');
+      const valorCompra = parseFloat(valorCompraRaw);
+      const dataCompra = document.getElementById('dataCompra').value;
+      const diaPagamento = parseInt(document.getElementById('diaPagamento').value);
+      const parcelasTotais = parseInt(document.getElementById('parcelasTotais').value);
+
+      console.log('Verificando campos...');
+      if (!nomeCliente) { console.log('Campo nomeCliente vazio'); alert('Preencha o nome do cliente correto.'); return; }
+      if (!cpfCliente) { console.log('Campo cpfCliente vazio'); alert('Preencha um CPF valido.'); return; }
+      if (!numCliente) { console.log('Campo numCliente vazio'); alert('Preencha um Telefone valido.'); return; }
+      if (!produtosComprados) { console.log('Campo produtosComprados vazio'); alert('Preencha os produtos comprados.'); return; }
+      if (!valorCompraRaw) { console.log('Campo valorCompra vazio'); alert('Preencha o valor da compra correto.'); return; }
+      if (isNaN(valorCompra) || valorCompra <= 0) { console.log('Valor da compra inválido:', valorCompraRaw); alert('Valor da compra inválido.'); return; }
+      if (!dataCompra) { console.log('Campo dataCompra vazio'); alert('Preencha a data da compra correta.'); return; }
+      if (isNaN(diaPagamento) || diaPagamento < 1 || diaPagamento > 31) { console.log('Dia do pagamento inválido:', diaPagamento); alert('Preencha o dia do pagamento corretamente (1 a 31).'); return; }
+      if (isNaN(parcelasTotais) || parcelasTotais < 1) { console.log('Número de parcelas inválido:', parcelasTotais); alert('Preencha o número de parcelas corretamente.'); return; }
+
+      // Se passar todas as validações, salva o crediário
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+
+      crediarios.push({
+        nomeCliente,
+        cpfCliente,
+        numCliente,
+        produtosComprados,
+        valorCompra,
+        dataCompra,
+        diaPagamento,
+        parcelasTotais,
+        parcelasPagas: 0
+      });
+
+      localStorage.setItem('crediarios', JSON.stringify(crediarios));
+      limparFormulario();
+      carregarCrediarios();
+    }
+
+    function limparFormulario() {
+      document.getElementById('nomeCliente').value = '';
+      document.getElementById('cpfCliente').value = '';
+      document.getElementById('numCliente').value = '';
+      document.getElementById('produtosComprados').value = '';
+      document.getElementById('valorCompra').value = '';
+      document.getElementById('dataCompra').value = '';
+      document.getElementById('diaPagamento').value = '';
+      document.getElementById('parcelasTotais').value = '';
+    }
+
+    function carregarHistorico() {
+      const historicoDiv = document.getElementById('listaHistoricoCrediarios');
+      const historico = JSON.parse(localStorage.getItem('historicoCrediariosPagos')) || [];
+
+      historicoDiv.innerHTML = '<h2>Crediários Pagos</h2>';
+
+      if (historico.length === 0) {
+        historicoDiv.innerHTML += '<p>Nenhum crediário pago ainda.</p>';
+        return;
+      }
+
+      historico.forEach((c, i) => {
+        historicoDiv.innerHTML += `
+      <div style="border:1px solid #ccc; margin:10px 0; padding:10px;">
+        <p><strong>Nome:</strong> ${c.nomeCliente}</p>
+        <p><strong>CPF:</strong> ${c.cpfCliente}</p>
+        <p><strong>Telefone:</strong> ${c.numCliente}</p>
+        <p><strong>Produtos:</strong> ${c.produtosComprados}</p>
+        <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valorCompra).toFixed(2)}</p>
+        <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
+        <p><strong>Data de Pagamento Final:</strong> ${c.dataPagamentoFinal || 'Não informado'}</p>
+        <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
+        <button onclick="removerDoHistorico(${i})">Remover</button>
+      </div>
+    `;
+      });
+    }
+
+    function removerDoHistorico(index) {
+      const historico = JSON.parse(localStorage.getItem('historicoCrediariosPagos')) || [];
+      historico.splice(index, 1);
+      localStorage.setItem('historicoCrediariosPagos', JSON.stringify(historico));
+      carregarHistorico();
+    }
+
+    function pagarParcela(index) {
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+      const historico = JSON.parse(localStorage.getItem('historicoCrediariosPagos')) || [];
+
+      if (crediarios[index].parcelasPagas < crediarios[index].parcelasTotais) {
+        crediarios[index].parcelasPagas++;
+
+        // Se pagou todas as parcelas, move para histórico
+        if (crediarios[index].parcelasPagas >= crediarios[index].parcelasTotais) {
+          // Adiciona data de pagamento final (opcional)
+          crediarios[index].dataPagamentoFinal = new Date().toLocaleDateString();
+
+          historico.push(crediarios[index]);
+          crediarios.splice(index, 1);
+        }
+
+        localStorage.setItem('crediarios', JSON.stringify(crediarios));
+        localStorage.setItem('historicoCrediariosPagos', JSON.stringify(historico));
+        carregarCrediarios();
+        carregarHistorico(); // Se você criar uma função para mostrar histórico
+      }
+    }
+
+    document.getElementById('btnSalvarCrediario').addEventListener('click', function (event) {
+      event.preventDefault(); // evita recarregar a página
+      adicionarCrediario();
+    });
+
+    carregarCrediarios();
+
+    function removerCrediario(index) {
+      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
+      crediarios.splice(index, 1);
+      localStorage.setItem('crediarios', JSON.stringify(crediarios));
+      carregarCrediarios();
+    }
 
     function calcularTroco() {
       const valorCompra = parseFloat(document.getElementById("valorCompra").value);
@@ -789,113 +974,6 @@
       detalhes += "</ul>";
 
       resultadoDiv.innerHTML = detalhes;
-    }
-
-    function montarCrediario() {
-      const section = document.getElementById('crediario');
-      section.innerHTML += `
-    <div id="formCrediario" style="margin: 20px; display: flex; flex-direction: column; gap: 10px">
-      <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
-      <input type="text" id="cpfCliente" placeholder="CPF">
-      <input type="text" id="produtosComprados" placeholder="Produtos Comprados">
-      <input type="text" id="valorCompra" placeholder="Valor da Compra">
-      <input type="date" id="dataCompra">
-      <input type="number" id="diaPagamento" placeholder="Dia do Mês de Pagamento" min="1" max="31">
-      <input type="number" id="parcelasTotais" placeholder="Número de Parcelas" min="1">
-      <button onclick="adicionarCrediario()">Salvar Crediário</button>
-    </div>
-
-    <div id="listaCrediarios" style="margin-top: 30px">
-      <h3 style="text-align:center">Clientes no Crediário</h3>
-    </div>
-  `;
-
-      carregarCrediarios();
-    }
-
-    function adicionarCrediario() {
-      const nome = document.getElementById('nomeCliente').value;
-      const cpf = document.getElementById('cpfCliente').value;
-      const produtos = document.getElementById('produtosComprados').value;
-      const valor = document.getElementById('valorCompra').value;
-      const dataCompra = document.getElementById('dataCompra').value;
-      const diaPagamento = document.getElementById('diaPagamento').value;
-      const parcelasTotais = parseInt(document.getElementById('parcelasTotais').value);
-
-      if (!nome || !cpf || !produtos || !valor || !dataCompra || !diaPagamento || !parcelasTotais) {
-        alert('Preencha todos os campos!');
-        return;
-      }
-
-      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
-
-      crediarios.push({
-        id: Date.now(),
-        nome,
-        cpf,
-        produtos,
-        valor,
-        dataCompra,
-        diaPagamento,
-        parcelasTotais,
-        parcelasPagas: 0
-      });
-
-      localStorage.setItem('crediarios', JSON.stringify(crediarios));
-
-      carregarCrediarios();
-    }
-
-    function carregarCrediarios() {
-      const listaDiv = document.getElementById('listaCrediarios');
-      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
-
-      listaDiv.innerHTML = '<h3 style="text-align:center">Clientes no Crediário</h3>';
-
-      crediarios.forEach(c => {
-        const valorParcela = (parseFloat(c.valor) / c.parcelasTotais).toFixed(2);
-
-        listaDiv.innerHTML += `
-      <div style="border: 1px solid #444; border-radius: 8px; padding: 10px; margin: 10px 0; background: #222">
-        <p><strong>Nome:</strong> ${c.nome}</p>
-        <p><strong>CPF:</strong> ${c.cpf}</p>
-        <p><strong>Produtos:</strong> ${c.produtos}</p>
-        <p><strong>Valor Total:</strong> R$ ${parseFloat(c.valor).toFixed(2)}</p>
-        <p><strong>Valor Parcela:</strong> R$ ${valorParcela}</p>
-        <p><strong>Data da Compra:</strong> ${c.dataCompra}</p>
-        <p><strong>Dia Pagamento:</strong> ${c.diaPagamento}</p>
-        <p><strong>Parcelas:</strong> ${c.parcelasPagas} / ${c.parcelasTotais}</p>
-        <button onclick="pagarParcela(${c.id})">Pagar Parcela</button>
-        <button onclick="excluirCrediario(${c.id})">Excluir</button>
-      </div>
-    `;
-      });
-    }
-
-    function pagarParcela(id) {
-      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
-      const index = crediarios.findIndex(c => c.id === id);
-
-      if (index !== -1) {
-        crediarios[index].parcelasPagas++;
-
-        if (crediarios[index].parcelasPagas >= crediarios[index].parcelasTotais) {
-          if (confirm('Todas as parcelas foram pagas. Remover este crediário?')) {
-            crediarios.splice(index, 1);
-          }
-        }
-
-        localStorage.setItem('crediarios', JSON.stringify(crediarios));
-        carregarCrediarios();
-      }
-    }
-
-    function excluirCrediario(id) {
-      const crediarios = JSON.parse(localStorage.getItem('crediarios')) || [];
-      const novoArray = crediarios.filter(c => c.id !== id);
-
-      localStorage.setItem('crediarios', JSON.stringify(novoArray));
-      carregarCrediarios();
     }
 
     function salvarDados() {
@@ -1045,6 +1123,7 @@
 
       atualizarCarrinhoUI();
     }
+
     function atualizarHistorico() {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
 
@@ -1119,29 +1198,32 @@
 
       atualizarGrafico('semana');
     }
+
     function atualizarCarrinhoUI() {
-  const container = document.getElementById('carrinhoContainer');
-  container.innerHTML = '';
-  let total = 0;
+      const container = document.getElementById('carrinhoContainer');
+      container.innerHTML = '';
+      let total = 0;
 
-  carrinho.forEach((item, index) => {
-    total += item.subtotal;
+      carrinho.forEach((item, index) => {
+        total += item.subtotal;
 
-    container.innerHTML += `
+        container.innerHTML += `
       <div>
         ${item.nome} - ${item.quantidade}x R$${item.preco.toFixed(2)} 
         (${item.desconto}% desc) = R$${item.subtotal.toFixed(2)}
         <button onclick="removerDoCarrinho(${index})">Remover</button>
       </div>
     `;
-  });
+      });
 
-  container.innerHTML += `<strong>Total: R$${total.toFixed(2)}</strong>`;
-}
+      container.innerHTML += `<strong>Total: R$${total.toFixed(2)}</strong>`;
+    }
+
     function removerDoCarrinho(index) {
       carrinho.splice(index, 1);
       atualizarCarrinhoUI();
     }
+
     function finalizarVenda() {
       if (carrinho.length === 0) {
         return alert("Carrinho está vazio.");
@@ -1179,7 +1261,6 @@
       alert("Venda finalizada com sucesso!");
       atualizarSelectProdutos();
     }
-
 
     function gerarComprovanteDaVenda(index) {
       const vendas = JSON.parse(localStorage.getItem('vendas')) || [];
