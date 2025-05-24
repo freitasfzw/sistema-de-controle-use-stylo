@@ -736,11 +736,11 @@
 
   <!--! PAINEL DE SENHA -->
   <div id="senhaModal"
-    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;" autocomplete="off">
     <div
       style="background:var(--background2); padding:20px; border-radius:10px; text-align:center; width:90%; max-width:300px;">
       <h3>Senha Necessária</h3>
-      <input type="password" id="senhaInput" placeholder="Digite a senha"
+      <input type="password" id="senhaInput" placeholder="Digite a senha" autocomplete="new-password"
         style="width:80%; padding:10px; margin:10px 0;">
       <button onclick="verificarSenha()">Entrar</button>
       <button onclick="fecharModalSenha()">Cancelar</button>
